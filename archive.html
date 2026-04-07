@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Archive — The Susky Times</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #0f172a; --ink-light: #475569; --gold: #d97706;
+      --gold-light: #fef3c7; --bg: #fffdf7; --bg-card: #ffffff;
+      --border: #e2e8f0; --serif: 'Playfair Display', serif;
+      --sans: 'Inter', sans-serif; --max-w: 720px; --radius: 10px;
+      --shadow: 0 2px 16px rgba(0,0,0,.06);
+    }
+    [data-theme="dark"] { --ink:#f1f5f9;--ink-light:#94a3b8;--gold:#fbbf24;--gold-light:#1c1407;--bg:#0f172a;--bg-card:#1e293b;--border:#334155; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:var(--sans); background:var(--bg); color:var(--ink); }
+    a { color:var(--gold); text-decoration:none; }
+
+    .topbar { background:var(--ink); color:#fff; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; padding:7px 1rem; display:flex; justify-content:space-between; align-items:center; }
+    .dark-toggle { background:none; border:1px solid rgba(255,255,255,.3); color:#fff; border-radius:20px; padding:3px 10px; font-size:.68rem; cursor:pointer; letter-spacing:.06em; text-transform:uppercase; }
+    .dark-toggle:hover { border-color:var(--gold); color:var(--gold); }
+
+    .masthead { border-bottom:3px double var(--border); text-align:center; padding:1.8rem 1rem 1.2rem; max-width:var(--max-w); margin:0 auto; }
+    .masthead-title { font-family:var(--serif); font-size:clamp(2.2rem,6vw,3.5rem); font-weight:900; }
+    .masthead-title span { color:var(--gold); }
+    .masthead-tagline { font-size:.8rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-light); margin-top:.5rem; font-weight:600; }
+
+    .container { max-width:var(--max-w); margin:0 auto; padding:2rem 1rem 4rem; }
+    h1.page-title { font-family:var(--serif); font-size:2rem; margin-bottom:.3rem; }
+    .page-sub { font-size:.88rem; color:var(--ink-light); margin-bottom:2rem; }
+
+    .issue-grid { display:grid; grid-template-columns:1fr; gap:1rem; }
+    .issue-card { display:flex; gap:1rem; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:1.1rem 1.2rem; box-shadow:var(--shadow); transition: transform .15s, box-shadow .15s; cursor:pointer; }
+    .issue-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.1); border-color:var(--gold); }
+    .issue-number { font-family:var(--serif); font-size:2rem; font-weight:900; color:var(--gold); min-width:3rem; line-height:1; }
+    .issue-meta { flex:1; }
+    .issue-meta .date { font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-light); margin-bottom:.2rem; }
+    .issue-meta .headline { font-family:var(--serif); font-size:1rem; font-weight:700; margin-bottom:.3rem; line-height:1.3; }
+    .issue-meta .preview { font-size:.8rem; color:var(--ink-light); line-height:1.5; }
+    .issue-meta .tags { display:flex; gap:.4rem; margin-top:.5rem; flex-wrap:wrap; }
+    .tag { font-size:.6rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; background:var(--gold-light); color:var(--gold); border-radius:20px; padding:2px 7px; }
+
+    .coming-soon { text-align:center; padding:3rem 1rem; color:var(--ink-light); }
+    .coming-soon .big { font-family:var(--serif); font-size:1.5rem; color:var(--ink); margin-bottom:.5rem; }
+
+    footer { background:var(--ink); color:rgba(255,255,255,.55); text-align:center; padding:2rem 1rem; font-size:.75rem; line-height:1.7; }
+    footer strong { color:var(--gold); }
+    footer a { color:rgba(255,255,255,.6); }
+  </style>
+</head>
+<body>
+<div class="topbar">
+  <span><a href="index.html" style="color:var(--gold)">← Back to Today's Issue</a></span>
+  <button class="dark-toggle" onclick="toggleDark()">☾ Dark</button>
+</div>
+
+<div class="masthead">
+  <div class="masthead-title">The Susky<span> Times</span></div>
+  <div class="masthead-tagline">Issue Archive</div>
+</div>
+
+<div class="container">
+  <h1 class="page-title">All Issues</h1>
+  <p class="page-sub">Every issue of The Susky Times, going back to Day 1. Click any issue to read it.</p>
+
+  <div class="issue-grid" id="issue-grid">
+    <!-- Issues are injected here by the automation script daily -->
+    <!-- ARCHIVE_ENTRIES_START -->
+    <div class="issue-card" onclick="window.location.href='issues/2026-04-08.html'">
+      <div class="issue-number">#1</div>
+      <div class="issue-meta">
+        <div class="date">Tuesday, April 8, 2026</div>
+        <div class="headline">Tariff Tremors: What the New Trade War Means for Your Wallet — and Your Career</div>
+        <div class="preview">Sweeping US tariffs, OpenAI's $300B valuation, Fed rate hold, and a career corner on Python modeling.</div>
+        <div class="tags">
+          <span class="tag">Tariffs</span>
+          <span class="tag">OpenAI</span>
+          <span class="tag">Careers</span>
+          <span class="tag">Markets</span>
+        </div>
+      </div>
+    </div>
+    <!-- ARCHIVE_ENTRIES_END -->
+  </div>
+
+</div>
+
+<footer>
+  <strong>The Susky Times</strong><br>
+  <a href="index.html">Today's Issue</a> · <a href="mailto:suskytimes@gmail.com">Contact</a>
+</footer>
+
+<script>
+  const saved = localStorage.getItem('st-theme');
+  if (saved === 'dark') document.body.setAttribute('data-theme','dark');
+  function toggleDark() {
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    isDark ? document.body.removeAttribute('data-theme') : document.body.setAttribute('data-theme','dark');
+    localStorage.setItem('st-theme', isDark ? 'light' : 'dark');
+  }
+</script>
+</body>
+</html>
