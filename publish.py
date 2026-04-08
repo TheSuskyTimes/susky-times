@@ -89,11 +89,7 @@ def build_html(d):
     html = template_path.read_text(encoding="utf-8")
 
     # ── Date / meta ──────────────────────────────────────────────────────────
-    # Update the visible date in the masthead (looks for the date text pattern)
-    html = re.sub(
-        r'(<span[^>]*class="[^"]*date-display[^"]*"[^>]*>)[^<]*(</span>)',
-        rf'\g<1>{d["date_str"]}\2', html
-    )
+    html = _replace_between(html, "today-date", d["date_str"])
     # Also update sub-count
     html = _replace_between(html, "sub-count", f'{d["sub_count"]} subscribers')
 
