@@ -991,10 +991,7 @@
     return Math.max(1, diff);
   }
 
-  const today = new Date();
-  document.getElementById('today-date').textContent = formatDate(today);
-  document.getElementById('day-greeting').textContent = dayName(today);
-  document.getElementById('issue-num').textContent = issueNumber(today);
+  // Date, day greeting, and issue number are set by the daily publisher in the HTML.
 
   // ── READING PROGRESS ────────────────────────────────────────
   window.addEventListener('scroll', () => {
