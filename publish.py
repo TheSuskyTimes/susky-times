@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
 The Susky Times — Daily Publishing Script
+Includes Athlete of the Day scraper from suriverhawks.com
 ==========================================
 Called by the scheduled task every morning.
 Injects today's content into the HTML template, then pushes to GitHub.
 Uses only Python stdlib (no third-party packages needed).
 """
 
-import os, json, base64, re
+import os, json, base64, re, random
 from pathlib import Path
 from urllib import request as urlreq, error as urlerr
 
@@ -185,6 +186,14 @@ def build_html(d):
     html = _replace_between(html, "closer-stat",    d["closer_stat"])
     html = _replace_between(html, "closer-context", d["closer_context"])
 
+    # ── Athlete of the Day ────────────────────────────────────────────────────
+    athlete = d.get("athlete")
+    if not athlete:
+        print("  Fetching Athlete of the Day from suriverhawks.com...")
+        athlete = fetch_athlete_of_the_day()
+        print(f"  Athlete: {athlete['name']} ({athlete['sport']})")
+    html = inject_athlete(html, athlete)
+
     return html
 
 
@@ -256,6 +265,173 @@ def publish_issue(issue_data: dict):
     print(f"  Updated archive.html")
 
     print(f"Published Issue #{issue_num} for {date_file}")
+    return html
+
+
+# ── ATHLETE OF THE DAY ────────────────────────────────────────────────────────
+
+SU_SPORTS = [
+    ("Football",          "football"),
+    ("Men's Basketball",  "mens-basketball"),
+    ("Women's Basketball","womens-basketball"),
+    ("Baseball",          "baseball"),
+    ("Softball",          "softball"),
+    ("Men's Soccer",      "mens-soccer"),
+    ("Women's Soccer",    "womens-soccer"),
+    ("Men's Lacrosse",    "mens-lacrosse"),
+    ("Women's Lacrosse",  "womens-lacrosse"),
+    ("Volleyball",        "volleyball"),
+    ("Field Hockey",      "field-hockey"),
+    ("Wrestling",         "wrestling"),
+    ("Men's Tennis",      "mens-tennis"),
+    ("Women's Tennis",    "womens-tennis"),
+    ("Men's Cross Country","mens-cross-country"),
+    ("Women's Cross Country","womens-cross-country"),
+    ("Swimming & Diving", "swimming-and-diving"),
+]
+
+def fetch_athlete_of_the_day():
+    """
+    Pick a random sport, fetch the roster, pick a random athlete.
+    Returns a dict: {name, sport, position, year, hometown, photo_url, profile_url, initials}
+    """
+    random.shuffle(SU_SPORTS)
+    for sport_name, sport_slug in SU_SPORTS:
+        try:
+            url = f"https://suriverhawks.com/sports/{sport_slug}/roster"
+            req = urlreq.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urlreq.urlopen(req, timeout=10) as r:
+                html = r.read().decode("utf-8", errors="ignore")
+
+            # Extract all athlete photo URLs from the page
+            photo_urls = re.findall(
+                r'https://suriverhawks\.com/images/[^\s"\']+\.(?:jpg|jpeg|png|JPG|PNG)',
+                html, re.IGNORECASE
+            )
+            # Build a name→photo map (URL has Name_Lastname.JPG pattern)
+            photo_map = {}
+            for p in photo_urls:
+                fname = re.sub(r'\.[^.]+$', '', p.split("/")[-1])  # strip extension
+                key = re.sub(r'[_\-]+', ' ', fname).strip().lower()
+                photo_map[key] = p
+
+            # Extract athlete names and profile links
+            athletes = []
+            seen_profiles = set()
+            for m in re.finditer(
+                r'href="(/sports/' + re.escape(sport_slug) + r'/roster/[^"]+/(\d+))"[^>]*>\s*([^<]{3,60})</a>',
+                html
+            ):
+                profile_path, _uid, name = m.group(1), m.group(2), m.group(3).strip()
+                # Skip generic link labels and duplicates
+                if not name or len(name) < 3 or name.lower() in ("full bio", "bio", "profile", "more"):
+                    continue
+                if profile_path in seen_profiles:
+                    continue
+                seen_profiles.add(profile_path)
+                name_key = name.lower()
+                photo = photo_map.get(name_key, "")
+                # Fuzzy photo match: try last name
+                if not photo:
+                    last = name.split()[-1].lower() if name.split() else ""
+                    photo = next((v for k, v in photo_map.items() if last in k), "")
+                athletes.append({
+                    "name": name,
+                    "photo_url": photo,
+                    "profile_url": f"https://suriverhawks.com{profile_path}",
+                })
+
+            # Fallback: just use photo URLs to build minimal athlete entries
+            if not athletes and photo_urls:
+                for p in photo_urls:
+                    fname = re.sub(r'\.[^.]+$', '', p.split("/")[-1])
+                    name = re.sub(r'[_\-]+', ' ', fname).strip()
+                    # Filter out non-name strings (too short or contain digits)
+                    if len(name) >= 5 and not re.search(r'\d', name):
+                        athletes.append({
+                            "name": name,
+                            "photo_url": p,
+                            "profile_url": f"https://suriverhawks.com/sports/{sport_slug}/roster",
+                        })
+
+            if not athletes:
+                continue
+
+            athlete = random.choice(athletes)
+            name = athlete["name"]
+            initials = "".join(p[0].upper() for p in name.split()[:2])
+
+            # Try to get more detail from profile page
+            position, year, hometown = "", "", ""
+            if athlete.get("profile_url") and "rp_id" in athlete.get("profile_url", ""):
+                try:
+                    preq = urlreq.Request(athlete["profile_url"], headers={"User-Agent": "Mozilla/5.0"})
+                    with urlreq.urlopen(preq, timeout=8) as pr:
+                        phtml = pr.read().decode("utf-8", errors="ignore")
+                    for label, field_var in [("Position", "position"), ("Class", "year"), ("Hometown", "hometown")]:
+                        pm = re.search(rf'{label}[^<]*</[^>]+>\s*<[^>]+>\s*([^<]+)<', phtml, re.IGNORECASE)
+                        if pm:
+                            val = pm.group(1).strip()
+                            if field_var == "position": position = val
+                            elif field_var == "year": year = val
+                            elif field_var == "hometown": hometown = val
+                except Exception:
+                    pass
+
+            return {
+                "name": name,
+                "sport": sport_name,
+                "position": position,
+                "year": year,
+                "hometown": hometown,
+                "photo_url": athlete.get("photo_url", ""),
+                "profile_url": athlete.get("profile_url", f"https://suriverhawks.com/sports/{sport_slug}/roster"),
+                "initials": initials,
+            }
+        except Exception:
+            continue
+
+    # Final fallback if all sports fail
+    return {
+        "name": "River Hawk",
+        "sport": "Athletics",
+        "position": "",
+        "year": "",
+        "hometown": "Selinsgrove, PA",
+        "photo_url": "",
+        "profile_url": "https://suriverhawks.com",
+        "initials": "RH",
+    }
+
+
+def inject_athlete(html, a):
+    """Inject athlete-of-the-day data into the HTML."""
+    html = _replace_between(html, "athlete-name",      a["name"])
+    html = _replace_between(html, "athlete-sport-tag", a["sport"].upper())
+    html = _replace_between(html, "athlete-position",  a.get("position", ""))
+    html = _replace_between(html, "athlete-year",      a.get("year", ""))
+    html = _replace_between(html, "athlete-hometown",  a.get("hometown", ""))
+    html = _replace_between(html, "athlete-initials",  a.get("initials", ""))
+
+    # Bio line
+    bio_parts = []
+    if a.get("sport"): bio_parts.append(f"Competing for the River Hawks in {a['sport']}")
+    if a.get("year"):  bio_parts.append(f"a {a['year'].lower()}")
+    if a.get("hometown"): bio_parts.append(f"from {a['hometown']}")
+    bio = (", ".join(bio_parts) + ".") if bio_parts else f"A member of SU's {a['sport']} team."
+    html = _replace_between(html, "athlete-bio", bio)
+
+    # Photo src
+    if a.get("photo_url"):
+        html = re.sub(
+            r'(id="athlete-photo"\s+src=")[^"]*(")',
+            rf'\g<1>{a["photo_url"]}\2', html, count=1
+        )
+    # Profile link
+    html = re.sub(
+        r'(id="athlete-link"\s+href=")[^"]*(")',
+        rf'\g<1>{a["profile_url"]}\2', html, count=1
+    )
     return html
 
 
