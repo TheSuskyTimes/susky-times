@@ -2,125 +2,205 @@
 """
 The Susky Times — Daily Publishing Script
 ==========================================
-Run by the scheduled task every morning at 7 AM.
-Searches for today's news, generates the digest, and pushes to GitHub.
-
-Requirements (install once):
-  pip install requests python-dotenv
+Called by the scheduled task every morning.
+Injects today's content into the HTML template, then pushes to GitHub.
+Uses only Python stdlib (no third-party packages needed).
 """
 
-import os, json, base64, re, datetime, requests
+import os, json, base64, re
 from pathlib import Path
+from urllib import request as urlreq, error as urlerr
 
-# ── CONFIG ──────────────────────────────────────────────────────────────────
-GITHUB_OWNER   = "TheSuskyTimes"
-GITHUB_REPO    = "susky-times"
-GITHUB_TOKEN   = os.environ.get("GITHUB_TOKEN", "")   # set in env or .env file
-BRANCH         = "main"
+# ── CONFIG ───────────────────────────────────────────────────────────────────
+GITHUB_OWNER  = "TheSuskyTimes"
+GITHUB_REPO   = "susky-times"
+GITHUB_TOKEN  = os.environ.get("GITHUB_TOKEN", "")
+BRANCH        = "main"
 
-# ── HELPERS ─────────────────────────────────────────────────────────────────
 
-def gh_api(method, path, data=None):
-    """GitHub API wrapper."""
-    r = requests.request(
-        method,
-        f"https://api.github.com/repos/{GITHUB_OWNER}/{GITHUB_REPO}{path}",
+# ── GITHUB HELPERS ────────────────────────────────────────────────────────────
+
+def gh_put(api_path, payload_dict):
+    """PUT to GitHub API. Returns parsed JSON response."""
+    data = json.dumps(payload_dict).encode("utf-8")
+    req = urlreq.Request(
+        f"https://api.github.com/repos/{GITHUB_OWNER}/{GITHUB_REPO}{api_path}",
+        data=data,
+        headers={
+            "Authorization": f"token {GITHUB_TOKEN}",
+            "Accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "Content-Type": "application/json",
+        },
+        method="PUT",
+    )
+    with urlreq.urlopen(req) as resp:
+        return json.loads(resp.read().decode())
+
+
+def gh_get(api_path):
+    """GET from GitHub API. Returns parsed JSON or None on 404."""
+    req = urlreq.Request(
+        f"https://api.github.com/repos/{GITHUB_OWNER}/{GITHUB_REPO}{api_path}",
         headers={
             "Authorization": f"token {GITHUB_TOKEN}",
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         },
-        json=data,
     )
-    r.raise_for_status()
-    return r.json()
-
-def get_file_sha(filepath):
-    """Get the current SHA of a file (needed to update it)."""
     try:
-        data = gh_api("GET", f"/contents/{filepath}")
-        return data["sha"]
-    except Exception:
-        return None
+        with urlreq.urlopen(req) as resp:
+            return json.loads(resp.read().decode())
+    except urlerr.HTTPError as e:
+        if e.code == 404:
+            return None
+        raise
+
+
+def get_sha(filepath):
+    data = gh_get(f"/contents/{filepath}")
+    return data["sha"] if data else None
+
 
 def push_file(filepath, content_str, commit_msg):
     """Create or update a file on GitHub."""
     encoded = base64.b64encode(content_str.encode("utf-8")).decode("utf-8")
-    sha = get_file_sha(filepath)
-    payload = {
-        "message": commit_msg,
-        "content": encoded,
-        "branch": BRANCH,
-    }
+    payload = {"message": commit_msg, "content": encoded, "branch": BRANCH}
+    sha = get_sha(filepath)
     if sha:
         payload["sha"] = sha
-    return gh_api("PUT", f"/contents/{filepath}", payload)
+    return gh_put(f"/contents/{filepath}", payload)
 
 
-# ── MAIN PUBLISH FUNCTION ────────────────────────────────────────────────────
+# ── HTML BUILDER ─────────────────────────────────────────────────────────────
 
-def publish_issue(issue_data: dict):
-    """
-    issue_data keys:
-      date_str        – "Tuesday, April 8, 2026"
-      date_file       – "2026-04-08"
-      issue_num       – 1
-      top_headline    – str
-      top_body        – [str, str, str]   (3 paragraphs)
-      top_link        – str (URL)
-      top_kicker      – str
-      hits            – list of dicts: {emoji, title, body, tag}
-      campus_headline – str
-      campus_body     – str
-      career_headline – str
-      career_body     – str
-      startup_headline– str
-      startup_body    – str
-      startup_link    – str
-      term_word       – str
-      term_def        – str
-      term_example    – str
-      poll_question   – str
-      poll_options    – list of 4 strings
-      poll_votes_init – list of 4 ints  (seed so not blank)
-      closer_stat     – str
-      closer_context  – str
-      sp500           – {val, chg, up}
-      nasdaq          – {val, chg, up}
-      dow             – {val, chg, up}
-      sub_count       – int
-    """
+def _replace_between(html, tag_id, new_value):
+    """Replace content between id="tag_id"> and the next </ tag."""
+    pattern = rf'(id="{re.escape(tag_id)}">)[^<]*(</)'
+    return re.sub(pattern, rf'\g<1>{new_value}\2', html, count=1)
 
-    html = build_html(issue_data)
-    date_file = issue_data["date_file"]
-    issue_num = issue_data["issue_num"]
 
-    # 1) Push today's issue as issues/YYYY-MM-DD.html
-    push_file(
-        f"issues/{date_file}.html",
-        html,
-        f"📰 Issue #{issue_num}: {issue_data['top_headline'][:60]}"
+def build_html(d):
+    """Read index_template.html and inject today's content."""
+    template_path = Path(__file__).parent / "index_template.html"
+    if not template_path.exists():
+        raise FileNotFoundError("index_template.html not found next to publish.py")
+
+    html = template_path.read_text(encoding="utf-8")
+
+    # ── Date / meta ──────────────────────────────────────────────────────────
+    # Update the visible date in the masthead (looks for the date text pattern)
+    html = re.sub(
+        r'(<span[^>]*class="[^"]*date-display[^"]*"[^>]*>)[^<]*(</span>)',
+        rf'\g<1>{d["date_str"]}\2', html
+    )
+    # Also update sub-count
+    html = _replace_between(html, "sub-count", f'{d["sub_count"]} subscribers')
+
+    # ── Market snapshot ──────────────────────────────────────────────────────
+    for key in ("sp500", "nasdaq", "dow"):
+        m = d[key]
+        direction = "up" if m["up"] else "down"
+        # Replace value
+        html = re.sub(
+            rf'(id="{key}-val">)[^<]*(</)',
+            rf'\g<1>{m["val"]}\2', html, count=1
+        )
+        # Replace change text and class
+        html = re.sub(
+            rf'(id="{key}-chg" class="change )(up|down)(">[^<]*</)',
+            rf'\g<1>{direction}\g<3>', html, count=1
+        )
+        html = re.sub(
+            rf'(id="{key}-chg"[^>]*>)[^<]*(</)',
+            rf'\g<1>{m["chg"]}\2', html, count=1
+        )
+
+    # ── Top story ────────────────────────────────────────────────────────────
+    html = _replace_between(html, "top-story-headline", d["top_headline"])
+    html = _replace_between(html, "top-story-body-1",   d["top_body"][0])
+    html = _replace_between(html, "top-story-body-2",   d["top_body"][1])
+    html = _replace_between(html, "top-story-body-3",   d["top_body"][2])
+
+    # Update the top-story source link href
+    if d.get("top_link"):
+        html = re.sub(
+            r'(id="top-story-link"[^>]*href=")[^"]*(")',
+            rf'\g<1>{d["top_link"]}\2', html, count=1
+        )
+
+    # ── Quick hits ───────────────────────────────────────────────────────────
+    hits_html = ""
+    for h in d["hits"]:
+        hits_html += f"""
+      <div class="hit">
+        <div class="hit-icon">{h.get('emoji', '')}</div>
+        <div class="hit-body">
+          <strong>{h['title']}</strong>
+          <p>{h['body']}</p>
+          <span class="tag">{h['tag']}</span>
+        </div>
+      </div>"""
+    html = re.sub(
+        r'(<div[^>]+id="hits-container"[^>]*>).*?(</div>\s*</div>)',
+        rf'\g<1>{hits_html}\n    </div>\n  </div>',
+        html, count=1, flags=re.DOTALL
     )
 
-    # 2) Update index.html (today's main page)
-    push_file("index.html", html, f"🔄 Update index.html for {date_file}")
+    # ── Campus ───────────────────────────────────────────────────────────────
+    html = _replace_between(html, "campus-headline", d["campus_headline"])
+    html = _replace_between(html, "campus-body",     d["campus_body"])
 
-    # 3) Update archive.html
-    update_archive(issue_data)
+    # ── Career corner ────────────────────────────────────────────────────────
+    html = _replace_between(html, "career-headline", d["career_headline"])
+    html = _replace_between(html, "career-body",     d["career_body"])
 
-    print(f"✅ Published Issue #{issue_num} for {date_file}")
+    # ── Startup spotlight ─────────────────────────────────────────────────────
+    html = _replace_between(html, "startup-headline", d["startup_headline"])
+    html = _replace_between(html, "startup-body",     d["startup_body"])
+    if d.get("startup_link"):
+        html = re.sub(
+            r'(id="startup-link"[^>]*href=")[^"]*(")',
+            rf'\g<1>{d["startup_link"]}\2', html, count=1
+        )
 
+    # ── Term of the day ──────────────────────────────────────────────────────
+    html = _replace_between(html, "term-word",    d["term_word"])
+    html = _replace_between(html, "term-def",     d["term_def"])
+    html = _replace_between(html, "term-example", d["term_example"])
+
+    # ── Poll ─────────────────────────────────────────────────────────────────
+    html = _replace_between(html, "poll-question", d["poll_question"])
+    for i, opt in enumerate(d["poll_options"][:4]):
+        html = _replace_between(html, f"opt-{i}", opt)
+
+    # Seed poll vote counts in the JS
+    votes_js = f"const seedVotes = {json.dumps(d.get('poll_votes_init', [12,18,9,15]))};"
+    if "const seedVotes" in html:
+        html = re.sub(r'const seedVotes\s*=\s*\[[^\]]*\];', votes_js, html)
+    else:
+        html = html.replace("</script>", f"  {votes_js}\n</script>", 1)
+
+    # ── Closer stat ──────────────────────────────────────────────────────────
+    html = _replace_between(html, "closer-stat",    d["closer_stat"])
+    html = _replace_between(html, "closer-context", d["closer_context"])
+
+    return html
+
+
+# ── ARCHIVE UPDATER ───────────────────────────────────────────────────────────
 
 def update_archive(d):
-    """Prepend a new entry to the archive page."""
-    try:
-        raw = gh_api("GET", "/contents/archive.html")
-        current = base64.b64decode(raw["content"]).decode("utf-8")
-    except Exception:
-        return  # archive.html doesn't exist yet
+    """Prepend a new entry card to archive.html."""
+    raw = gh_get("/contents/archive.html")
+    if not raw:
+        return
+    current = base64.b64decode(raw["content"]).decode("utf-8")
+    sha = raw["sha"]
 
-    tags = extract_tags(d)
-    tag_html = "".join(f'<span class="tag">{t}</span>' for t in tags)
+    tags = [h.get("tag", "").split("&")[0].strip()[:20] for h in d.get("hits", [])[:3] if h.get("tag")]
+    tag_html = "".join(f'<span class="tag">{t}</span>' for t in tags[:4])
+    preview = d["hits"][0]["title"][:80] if d.get("hits") else ""
 
     new_entry = f"""
     <div class="issue-card" onclick="window.location.href='issues/{d['date_file']}.html'">
@@ -128,7 +208,7 @@ def update_archive(d):
       <div class="issue-meta">
         <div class="date">{d['date_str']}</div>
         <div class="headline">{d['top_headline']}</div>
-        <div class="preview">{d['hits'][0]['title'][:80]}...</div>
+        <div class="preview">{preview}…</div>
         <div class="tags">{tag_html}</div>
       </div>
     </div>"""
@@ -137,90 +217,47 @@ def update_archive(d):
         "<!-- ARCHIVE_ENTRIES_START -->",
         f"<!-- ARCHIVE_ENTRIES_START -->\n{new_entry}"
     )
-    push_file("archive.html", updated, f"📚 Archive: add issue #{d['issue_num']}")
+    push_file("archive.html", updated, f"Archive: add issue #{d['issue_num']}")
 
 
-def extract_tags(d):
-    tags = []
-    for hit in d.get("hits", [])[:3]:
-        t = hit.get("tag", "")
-        if t: tags.append(t.split("&")[0].strip()[:20])
-    return tags[:4]
+# ── MAIN PUBLISH ─────────────────────────────────────────────────────────────
 
+def publish_issue(issue_data: dict):
+    """
+    Build today's HTML from the template, push the issue file, update index.html
+    and archive.html on GitHub, and save updated files locally.
 
-def build_html(d):
-    """Read the template and inject today's content."""
-    # Read the base template
-    template_path = Path(__file__).parent / "index_template.html"
-    if not template_path.exists():
-        raise FileNotFoundError("index_template.html not found. Run setup first.")
+    Required keys in issue_data: see comments in build_html() above.
+    """
+    html = build_html(issue_data)
+    date_file  = issue_data["date_file"]
+    issue_num  = issue_data["issue_num"]
+    headline   = issue_data["top_headline"]
 
-    html = template_path.read_text(encoding="utf-8")
+    # Save locally so Netlify deploy can pick it up
+    local_dir = Path(__file__).parent
+    (local_dir / "index.html").write_text(html, encoding="utf-8")
+    print(f"  Saved index.html locally")
 
-    # Market data
-    for key, idx_key in [("sp500", "sp500"), ("nasdaq", "nasdaq"), ("dow", "dow")]:
-        m = d[key]
-        direction = "up" if m["up"] else "down"
-        arrow = "▲" if m["up"] else "▼"
-        sign = "+" if m["up"] else "−"
-        html = html.replace(f'id="{idx_key}-val">{d[key]["val_placeholder"]}<',
-                            f'id="{idx_key}-val">{m["val"]}<')
-        html = html.replace(f'id="{idx_key}-chg" class="change up"',
-                            f'id="{idx_key}-chg" class="change {direction}"')
-
-    # Use simple token replacement on content sections
-    replacements = {
-        'id="top-story-headline">': f'id="top-story-headline">{d["top_headline"]}<',
-        'id="top-story-body-1">':   f'id="top-story-body-1">{d["top_body"][0]}<',
-        'id="top-story-body-2">':   f'id="top-story-body-2">{d["top_body"][1]}<',
-        'id="top-story-body-3">':   f'id="top-story-body-3">{d["top_body"][2]}<',
-        'id="campus-headline">':    f'id="campus-headline">{d["campus_headline"]}<',
-        'id="campus-body">':        f'id="campus-body">{d["campus_body"]}<',
-        'id="career-headline">':    f'id="career-headline">{d["career_headline"]}<',
-        'id="career-body">':        f'id="career-body">{d["career_body"]}<',
-        'id="startup-headline">':   f'id="startup-headline">{d["startup_headline"]}<',
-        'id="startup-body">':       f'id="startup-body">{d["startup_body"]}<',
-        'id="term-word">':          f'id="term-word">{d["term_word"]}<',
-        'id="term-def">':           f'id="term-def">{d["term_def"]}<',
-        'id="term-example">':       f'id="term-example">{d["term_example"]}<',
-        'id="closer-stat">':        f'id="closer-stat">{d["closer_stat"]}<',
-        'id="closer-context">':     f'id="closer-context">{d["closer_context"]}<',
-        'id="poll-question">':      f'id="poll-question">{d["poll_question"]}<',
-        'id="sub-count">':          f'id="sub-count">{d["sub_count"]} subscribers<',
-    }
-
-    # Build hits HTML
-    hits_html = ""
-    for h in d["hits"]:
-        hits_html += f"""
-      <div class="hit">
-        <div class="hit-emoji">{h['emoji']}</div>
-        <div class="hit-body">
-          <strong>{h['title']}</strong>
-          <p>{h['body']}</p>
-          <span class="tag">{h['tag']}</span>
-        </div>
-      </div>"""
-    html = re.sub(
-        r'<div class="quick-hits" id="hits-container">.*?</div>\s*</div>',
-        f'<div class="quick-hits" id="hits-container">{hits_html}\n    </div>\n  </div>',
-        html, flags=re.DOTALL
+    # Push today's dated issue
+    push_file(
+        f"issues/{date_file}.html",
+        html,
+        f"Issue #{issue_num}: {headline[:60]}"
     )
+    print(f"  Pushed issues/{date_file}.html")
 
-    # Poll options
-    for i, opt in enumerate(d["poll_options"]):
-        html = html.replace(f'id="opt-{i}">{html_opt_text(html, i)}<', f'id="opt-{i}">{opt}<')
+    # Update root index.html
+    push_file("index.html", html, f"Update index.html for {date_file}")
+    print(f"  Updated index.html on GitHub")
 
+    # Update archive
+    update_archive(issue_data)
+    print(f"  Updated archive.html")
+
+    print(f"Published Issue #{issue_num} for {date_file}")
     return html
 
 
-def html_opt_text(html, idx):
-    """Extract current option text from HTML for replacement."""
-    m = re.search(rf'id="opt-{idx}">([^<]+)<', html)
-    return m.group(1) if m else ""
-
-
-# ── STANDALONE TEST ───────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    # This is used for testing. The scheduled task calls publish_issue() directly.
     print("Susky Times publisher loaded. Call publish_issue(data) to publish.")
