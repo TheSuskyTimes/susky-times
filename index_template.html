@@ -220,6 +220,79 @@
     .up   { color: var(--green); }
     .down { color: var(--red); }
 
+    /* ── ATHLETE OF THE DAY ─────────────────────────────────── */
+    .athlete-card {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      padding: 1.4rem 1.6rem;
+    }
+    .athlete-photo-wrap {
+      flex-shrink: 0;
+      width: 110px;
+      height: 140px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--gold);
+      position: relative;
+    }
+    .athlete-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+    .athlete-initials {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: .05em;
+    }
+    .athlete-info { flex: 1; }
+    .athlete-sport-tag {
+      display: inline-block;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      background: var(--navy);
+      color: #fff;
+      border-radius: 20px;
+      padding: 2px 9px;
+      margin-bottom: .5rem;
+    }
+    .athlete-name {
+      font-family: var(--serif);
+      font-size: 1.65rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 .4rem;
+    }
+    .athlete-meta-row {
+      font-size: .82rem;
+      color: #666;
+      margin-bottom: .7rem;
+    }
+    .athlete-meta-row .dot { margin: 0 .3rem; }
+    .athlete-bio {
+      font-size: .9rem;
+      line-height: 1.6;
+      margin: 0 0 .8rem;
+    }
+    @media (max-width: 520px) {
+      .athlete-card { flex-direction: column; align-items: center; text-align: center; }
+      .athlete-meta-row { text-align: center; }
+    }
+
     /* ============================================================
        SECTION HEADERS
     ============================================================ */
@@ -868,6 +941,33 @@
       <h2 id="startup-headline">This 24-year-old raised $8M to fix the broken restaurant payroll system</h2>
       <p id="startup-body">Jake Lev dropped out of Wharton in 2023 to build Tipjar, a platform that automates tip distribution and payroll compliance for restaurants. After getting rejected by 40 VCs, he secured seed funding by walking into a restaurant owner's association meeting in Philadelphia and demoing live. Today, Tipjar processes payroll for over 800 restaurants across the Northeast. The lesson he keeps repeating: "Your first sale is not to a customer. It's to yourself."</p>
       <a class="read-more" id="startup-link" href="#" target="_blank">Read the full story →</a>
+    </div>
+  </div>
+
+  <!-- ATHLETE OF THE DAY -->
+  <div id="athlete">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><path d="M12 12v4"/><path d="M9 16l3 4 3-4"/></svg>Athlete of the Day</span>
+      <span class="section-badge">River Hawks</span>
+    </div>
+    <div class="athlete-card">
+      <div class="athlete-photo-wrap">
+        <img id="athlete-photo" src="" alt="Athlete photo" onerror="this.style.display='none';document.getElementById('athlete-initials').style.display='flex'">
+        <div class="athlete-initials" id="athlete-initials"></div>
+      </div>
+      <div class="athlete-info">
+        <div class="athlete-sport-tag" id="athlete-sport-tag">SPORT</div>
+        <h2 class="athlete-name" id="athlete-name">Athlete Name</h2>
+        <div class="athlete-meta-row">
+          <span id="athlete-position"></span>
+          <span class="dot">·</span>
+          <span id="athlete-year"></span>
+          <span class="dot">·</span>
+          <span id="athlete-hometown"></span>
+        </div>
+        <p class="athlete-bio" id="athlete-bio"></p>
+        <a class="read-more" id="athlete-link" href="https://suriverhawks.com" target="_blank">Full profile on SU Athletics →</a>
+      </div>
     </div>
   </div>
 
