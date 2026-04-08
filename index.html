@@ -220,6 +220,79 @@
     .up   { color: var(--green); }
     .down { color: var(--red); }
 
+    /* ── ATHLETE OF THE DAY ─────────────────────────────────── */
+    .athlete-card {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      padding: 1.4rem 1.6rem;
+    }
+    .athlete-photo-wrap {
+      flex-shrink: 0;
+      width: 110px;
+      height: 140px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--gold);
+      position: relative;
+    }
+    .athlete-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+    .athlete-initials {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: .05em;
+    }
+    .athlete-info { flex: 1; }
+    .athlete-sport-tag {
+      display: inline-block;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      background: var(--navy);
+      color: #fff;
+      border-radius: 20px;
+      padding: 2px 9px;
+      margin-bottom: .5rem;
+    }
+    .athlete-name {
+      font-family: var(--serif);
+      font-size: 1.65rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 .4rem;
+    }
+    .athlete-meta-row {
+      font-size: .82rem;
+      color: #666;
+      margin-bottom: .7rem;
+    }
+    .athlete-meta-row .dot { margin: 0 .3rem; }
+    .athlete-bio {
+      font-size: .9rem;
+      line-height: 1.6;
+      margin: 0 0 .8rem;
+    }
+    @media (max-width: 520px) {
+      .athlete-card { flex-direction: column; align-items: center; text-align: center; }
+      .athlete-meta-row { text-align: center; }
+    }
+
     /* ============================================================
        SECTION HEADERS
     ============================================================ */
@@ -771,7 +844,7 @@
       <p id="top-story-body-1">U.S. stocks fell sharply after President Trump announced sweeping new tariffs on imports from over 60 countries, sending the S&P 500 down more than 4% in its worst single-day drop since 2022.</p>
       <p id="top-story-body-2">The tariffs — ranging from 10% to 54% — target major trading partners including China, the EU, and Japan. Analysts warn the move could reignite inflation and slow global growth, with Goldman Sachs raising its recession probability to 45%.</p>
       <p id="top-story-body-3"><strong>The takeaway:</strong> Sectors most exposed to tariffs — autos, consumer electronics, agriculture — could see hiring freezes or restructuring in Q3. Meanwhile, domestic manufacturing, legal/compliance, and trade finance roles are quietly heating up. Keep that on your radar.</p>
-      <a class="read-more" id="top-story-link" href="https://www.wsj.com/economy/trade/trump-tariffs-wall-street-reaction" target="_blank">Read full story → Reuters</a>
+      <a class="read-more" id="top-story-link" href="https://www.wsj.com" target="_blank">Read full story → Reuters</a>
     </div>
   </div>
 
@@ -801,15 +874,15 @@
       <div class="hit">
         <div class="hit-icon">🍎</div>
         <div class="hit-body">
-          <strong>Apple reportedly shifting iPhone production to India</strong>
-          <p>Apple is accelerating its move away from China-based manufacturing, with plans to produce 25% of iPhones in India by end of 2026.</p>
+          <strong>Apple accelerates iPhone production shift to India</strong>
+          <p>Apple is moving 25% of iPhone production to India by end of 2026, reducing dependence on China amid escalating tariff risk.</p>
           <span class="tag">TECH</span>
         </div>
       </div>
       <div class="hit">
         <div class="hit-icon">🏦</div>
         <div class="hit-body">
-          <strong>JPMorgan raises recession odds to 60%</strong>
+          <strong>JPMorgan raises U.S. recession odds to 60%</strong>
           <p>JPMorgan analysts updated their economic outlook, citing tariff-driven supply chain disruptions and a potential consumer spending pullback.</p>
           <span class="tag">BANKING</span>
         </div>
@@ -865,7 +938,7 @@
     <div class="campus-card">
       <div class="kicker">Susquehanna University</div>
       <h3 id="campus-headline">Finance Club Hosts Mock Trading Challenge Amid Real Market Volatility</h3>
-      <p id="campus-body">Susquehanna University's Finance Club is running its annual mock stock trading competition through Friday — and this year, students are navigating a market that looks nothing like last semester's calm. Open to all SU students. Sign up at the Fisher Hall bulletin board. Winners receive a professional development prize including a Bloomberg Terminal session.</p>
+      <p id="campus-body">Susquehanna University's Finance Club is running its annual mock stock trading competition through Friday — and this year, students are navigating a market that looks nothing like last semester's calm. Open to all SU students. Sign up at the Fisher Hall bulletin board.</p>
     </div>
   </div>
 
@@ -878,7 +951,7 @@
     <div class="career-card">
       <div class="kicker">This Week's Insight</div>
       <h3 id="career-headline">Recession Fears Are Actually Boosting Demand for These Finance Roles</h3>
-      <p id="career-body">Counter-intuitively, economic uncertainty is driving hiring in risk analysis, compliance, and financial advisory. LinkedIn data shows a 23% jump in financial analyst postings at mid-sized firms year-over-year. SU Career Services is hosting a finance recruiting workshop on April 15 — check SU's Handshake portal to register.</p>
+      <p id="career-body">Counter-intuitively, economic uncertainty is driving hiring in risk analysis, compliance, and financial advisory. LinkedIn data shows a 23% jump in financial analyst postings at mid-sized firms year-over-year. Check SU's Handshake portal for the finance recruiting workshop on April 15.</p>
     </div>
   </div>
 
@@ -891,8 +964,35 @@
     <div class="story-feature">
       <div class="kicker">Founder Story</div>
       <h2 id="startup-headline">Pave Raises $110M to Help Gen Z Build Credit From Scratch</h2>
-      <p id="startup-body">Pave, a financial health platform targeting young adults, closed a $110 million Series C led by Andreessen Horowitz. The startup helps users under 30 build credit histories through rent and utility payment reporting — reaching 2 million users since its 2022 launch.</p>
+      <p id="startup-body">Pave, a financial health platform targeting young adults, closed a $110 million Series C led by Andreessen Horowitz. The startup helps users under 30 build credit through rent and utility payment reporting, reaching 2 million users since launching in 2022.</p>
       <a class="read-more" id="startup-link" href="https://techcrunch.com" target="_blank">Read the full story →</a>
+    </div>
+  </div>
+
+  <!-- ATHLETE OF THE DAY -->
+  <div id="athlete">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><path d="M12 12v4"/><path d="M9 16l3 4 3-4"/></svg>Athlete of the Day</span>
+      <span class="section-badge">River Hawks</span>
+    </div>
+    <div class="athlete-card">
+      <div class="athlete-photo-wrap">
+        <img id="athlete-photo" src="https://suriverhawks.com/images/2025/8/22/Nicky_Gray.JPG" alt="Athlete photo" onerror="this.style.display='none';document.getElementById('athlete-initials').style.display='flex'">
+        <div class="athlete-initials" id="athlete-initials">NG</div>
+      </div>
+      <div class="athlete-info">
+        <div class="athlete-sport-tag" id="athlete-sport-tag">MEN'S SOCCER</div>
+        <h2 class="athlete-name" id="athlete-name">Nicky Gray</h2>
+        <div class="athlete-meta-row">
+          <span id="athlete-position"></span>
+          <span class="dot">·</span>
+          <span id="athlete-year"></span>
+          <span class="dot">·</span>
+          <span id="athlete-hometown"></span>
+        </div>
+        <p class="athlete-bio" id="athlete-bio">Competing for the River Hawks in Men's Soccer.</p>
+        <a class="read-more" id="athlete-link" href="https://suriverhawks.com/sports/mens-soccer/roster/nicky-gray/12728" target="_blank">Full profile on SU Athletics →</a>
+      </div>
     </div>
   </div>
 
@@ -905,7 +1005,7 @@
       <div class="label">Business Term · Know It Before Your Interview</div>
       <div class="term" id="term-word">Tariff</div>
       <div class="definition" id="term-def">A tax imposed by a government on goods imported from another country, used to protect domestic industries or generate revenue.</div>
-      <div class="example" id="term-example">The new 25% tariff on steel imports means U.S. automakers now pay more for foreign-made steel, raising their production costs.</div>
+      <div class="example" id="term-example">The new 25% tariff on steel imports means U.S. automakers now pay more for foreign-made steel, raising production costs.</div>
     </div>
   </div>
 
@@ -992,6 +1092,7 @@
   }
 
   // Date, day greeting, and issue number are set by the daily publisher in the HTML.
+  // The issueNumber() function is kept here for reference.
 
   // ── READING PROGRESS ────────────────────────────────────────
   window.addEventListener('scroll', () => {
