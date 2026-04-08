@@ -90,6 +90,10 @@ def build_html(d):
 
     # ── Date / meta ──────────────────────────────────────────────────────────
     html = _replace_between(html, "today-date", d["date_str"])
+    html = _replace_between(html, "issue-num",  str(d["issue_num"]))
+    # day-greeting: extract day name from date_str (first word)
+    day_name = d["date_str"].split(",")[0]  # e.g. "Tuesday"
+    html = _replace_between(html, "day-greeting", day_name)
     # Also update sub-count
     html = _replace_between(html, "sub-count", f'{d["sub_count"]} subscribers')
 
