@@ -293,6 +293,97 @@
       .athlete-meta-row { text-align: center; }
     }
 
+    /* ── RIVER HAWKS SCORECARD ──────────────────────────────────── */
+    .game-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      margin-bottom: .9rem;
+      box-shadow: var(--shadow);
+    }
+    .game-meta {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: .35rem;
+    }
+    .game-score-row {
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      margin-bottom: .8rem;
+    }
+    .game-score-team {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .game-score-num {
+      font-family: var(--serif);
+      font-size: 1.7rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .game-score-num.win  { color: var(--green); }
+    .game-score-num.loss { color: var(--red); }
+    .game-score-sep { font-size: 1.1rem; color: var(--ink-light); }
+    .game-result-badge {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: auto;
+    }
+    .game-result-badge.win  { background: #dcfce7; color: var(--green); }
+    .game-result-badge.loss { background: #fee2e2; color: var(--red); }
+    .potg-row {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      background: var(--gold-light);
+      border-radius: 8px;
+      padding: .65rem .9rem;
+      border: 1px solid #fde68a;
+    }
+    .potg-star {
+      font-size: 1.1rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: .05rem;
+    }
+    .potg-info { flex: 1; min-width: 0; }
+    .potg-label {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      margin-bottom: .15rem;
+    }
+    .potg-name {
+      font-size: .92rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .potg-stats {
+      font-size: .78rem;
+      color: var(--ink-light);
+      margin-top: .1rem;
+    }
+    .scorecard-no-data {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--ink-light);
+      font-size: .88rem;
+      font-style: italic;
+    }
+
     /* ============================================================
        SECTION HEADERS
     ============================================================ */
@@ -752,13 +843,13 @@
      MASTHEAD
 ============================================================ -->
 <div class="masthead">
-  <div class="masthead-eyebrow">Est. 2026 · Issue #<span id="issue-num">1</span></div>
+  <div class="masthead-eyebrow">Est. 2026 · Issue #<span id="issue-num">15</span></div>
   <div class="masthead-title">The Susky<span> Times</span></div>
   <div class="masthead-tagline">Business news · 5-minute read · Susquehanna University</div>
   <div class="masthead-meta">
-    <span><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> <span id="today-date">Tuesday, April 8, 2026</span></span>
+    <span><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> <span id="today-date">Tuesday, April 21, 2026</span></span>
     <span><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span id="read-time">~5 min read</span></span>
-    <span><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> <span id="sub-count">142 subscribers</span></span>
+    <span><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> <span id="sub-count"><!-- SUB_COUNT --> readers</span></span>
   </div>
 </div>
 
@@ -793,30 +884,30 @@
 
   <!-- GREETING -->
   <div class="greeting">
-    <strong>Good morning, River Hawks.</strong> Today is <strong id="day-greeting">Tuesday</strong> and the business world did not take the night off. Here's what you need to know before your 9 AM — and it won't take more than 5 minutes.
+    <strong>☕ Good morning, River Hawks!</strong> It's <strong id="day-greeting">Tuesday</strong> and a lot happened overnight. We did the reading so you don't have to — here's your 5-minute business briefing before you even finish breakfast.
   </div>
 
   <!-- MARKETS -->
   <div id="markets">
     <div class="section-header">
       <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Market Snapshot</span>
-      <span class="section-badge">Live-ish</span>
+      <span class="section-badge">Updated Daily</span>
     </div>
     <div class="markets" id="market-data">
       <div class="market-card">
         <div class="name">S&amp;P 500</div>
-        <div class="value" id="sp500-val">5,074.08</div>
-        <div class="change up" id="sp500-chg">▼ −4.8%</div>
+        <div class="value" id="sp500-val">7,124</div>
+        <div class="change up" id="sp500-chg">▲ +0.21%</div>
       </div>
       <div class="market-card">
         <div class="name">NASDAQ</div>
-        <div class="value" id="nasdaq-val">15,587.79</div>
-        <div class="change down" id="nasdaq-chg">▼ −5.8%</div>
+        <div class="value" id="nasdaq-val">24,404</div>
+        <div class="change down" id="nasdaq-chg">▼ -0.26%</div>
       </div>
       <div class="market-card">
         <div class="name">Dow Jones</div>
-        <div class="value" id="dow-val">38,314.86</div>
-        <div class="change up" id="dow-chg">▼ −3.9%</div>
+        <div class="value" id="dow-val">49,443</div>
+        <div class="change up" id="dow-chg">▲ +0.50%*</div>
       </div>
     </div>
     <p style="font-size:.7rem;color:var(--ink-light);text-align:right;margin-top:-.3rem;">Data from previous close · Not financial advice</p>
@@ -824,27 +915,28 @@
 
   <!-- SIGN UP BAR (above fold) -->
   <div class="signup-bar">
-    <h3>Get it in your inbox every morning</h3>
-    <p>Join SU students who start their day smarter. Free. One click to unsubscribe.</p>
+    <h3>📬 Get it in your inbox, free</h3>
+    <p>Hundreds of SU students read The Susky Times every morning. Takes 2 seconds to sign up.</p>
     <div class="signup-form">
-      <input type="email" placeholder="your@susquehanna.edu" id="email-input" />
-      <button onclick="handleSignup()">Subscribe →</button>
+      <input type="email" placeholder="your@susquehanna.edu" id="email-input" autocomplete="email" />
+      <button onclick="handleSignup()" id="subscribe-btn">Subscribe free →</button>
     </div>
+    <p style="font-size:.72rem;margin-top:.5rem;color:var(--ink-light)">No spam. No fees. Unsubscribe any time.</p>
   </div>
 
   <!-- TOP STORY -->
   <div id="top-story">
     <div class="section-header">
       <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2C14.5 2 14 7 11 10c-3 3-7 3.5-7 3.5S6.5 17 9 19c2.5 2 5.5 3 8 1 2.5-2 3-5 2-8-.7-2-2.5-4-4.5-10z"/><path d="M8.5 14c0 0 .5 3 3.5 4"/></svg>Top Story</span>
-      <span class="section-badge">Feature</span>
+      <span class="section-badge">🔥 Today's Big One</span>
     </div>
     <div class="story-feature">
       <div class="kicker">Global Business</div>
-      <h2 id="top-story-headline">Markets Tumble as Tariff Fears Grip Wall Street</h2>
-      <p id="top-story-body-1">U.S. stocks fell sharply after President Trump announced sweeping new tariffs on imports from over 60 countries, sending the S&P 500 down more than 4% in its worst single-day drop since 2022.</p>
-      <p id="top-story-body-2">The tariffs — ranging from 10% to 54% — target major trading partners including China, the EU, and Japan. Analysts warn the move could reignite inflation and slow global growth, with Goldman Sachs raising its recession probability to 45%.</p>
+      <h2 id="top-story-headline">Apple Names John Ternus as Next CEO, Tim Cook Becomes Executive Chairman</h2>
+      <p id="top-story-body-1">In one of the biggest leadership transitions in corporate history, Apple announced Monday that Tim Cook will step down as CEO on September 1, 2026, with John Ternus — currently Senior Vice President of Hardware Engineering — taking the helm. Cook, 65, will move into the role of Executive Chairman, focusing on policy and government affairs.</p>
+      <p id="top-story-body-2">Ternus, 50, has been with Apple since 2001 and oversaw the development of iconic products including the M-series chips, AirPods Pro, and Vision Pro. He is widely regarded inside Apple as an engineer's engineer — someone who deeply understands the product pipeline. Apple shares dipped less than 1% on the news, suggesting investors largely view the transition as orderly.</p>
       <p id="top-story-body-3"><strong>The takeaway:</strong> Sectors most exposed to tariffs — autos, consumer electronics, agriculture — could see hiring freezes or restructuring in Q3. Meanwhile, domestic manufacturing, legal/compliance, and trade finance roles are quietly heating up. Keep that on your radar.</p>
-      <a class="read-more" id="top-story-link" href="https://www.wsj.com" target="_blank">Read full story → Reuters</a>
+      <a class="read-more" id="top-story-link" href="https://www.apple.com/newsroom/2026/04/tim-cook-to-become-apple-executive-chairman-john-ternus-to-become-apple-ceo/" target="_blank">Read full story → Reuters</a>
     </div>
   </div>
 
@@ -856,35 +948,43 @@
     </div>
     <div class="quick-hits" id="hits-container">
       <div class="hit">
-        <div class="hit-icon">📦</div>
-        <div class="hit-body">
-          <strong>Amazon pauses warehouse expansion amid tariff uncertainty</strong>
-          <p>Amazon told suppliers it is delaying new fulfillment center openings as it assesses the impact of new import duties on its supply chain costs.</p>
-          <span class="tag">E-COMMERCE</span>
-        </div>
-      </div>
-      <div class="hit">
-        <div class="hit-icon">✈️</div>
-        <div class="hit-body">
-          <strong>Airlines cut Q2 guidance as business travel demand softens</strong>
-          <p>Delta, United, and American all revised guidance lower, citing reduced corporate travel bookings as companies tighten discretionary spending.</p>
-          <span class="tag">TRAVEL</span>
-        </div>
-      </div>
-      <div class="hit">
-        <div class="hit-icon">🍎</div>
-        <div class="hit-body">
-          <strong>Apple accelerates iPhone production shift to India</strong>
-          <p>Apple is moving 25% of iPhone production to India by end of 2026, reducing dependence on China amid escalating tariff risk.</p>
-          <span class="tag">TECH</span>
-        </div>
-      </div>
-      <div class="hit">
         <div class="hit-icon">🏦</div>
         <div class="hit-body">
-          <strong>JPMorgan raises U.S. recession odds to 60%</strong>
-          <p>JPMorgan analysts updated their economic outlook, citing tariff-driven supply chain disruptions and a potential consumer spending pullback.</p>
-          <span class="tag">BANKING</span>
+          <strong>Kevin Warsh Faces Senate Grilling on Fed Independence</strong>
+          <p>President Trump's nominee to lead the Federal Reserve, Kevin Warsh, testified before the Senate Banking Committee today. Warsh pledged to keep rate-setting "independent" from political pressure — a key concern given Trump's push for lower interest rates. With inflation at 3.3% annually, Warsh must walk a tightrope between the White House and Wall Street. (Source: CNBC, CBS News)</p>
+          <span class="tag">Macro & Policy</span>
+        </div>
+      </div>
+      <div class="hit">
+        <div class="hit-icon">📈</div>
+        <div class="hit-body">
+          <strong>UnitedHealth Surges 9% After Crushing Q1 Earnings</strong>
+          <p>UnitedHealth Group (UNH) reported adjusted EPS of .23 vs. the .57 expected, on revenues of 11.7B — blowing past forecasts. The insurer also raised its full-year 2026 profit outlook. Shares soared more than 9% in morning trading, one of the biggest single-day gains for a Dow component in years. (Source: CNBC, Yahoo Finance)</p>
+          <span class="tag">Markets</span>
+        </div>
+      </div>
+      <div class="hit">
+        <div class="hit-icon">🌏</div>
+        <div class="hit-body">
+          <strong>South Korea's Kospi Hits Record High of 6,388</strong>
+          <p>South Korea's benchmark stock index surged 2.72% to a record 6,388.47 on Tuesday, driven by a tech rally and optimism around potential US-Iran peace talks. Asian markets broadly traded mixed, with South Korea standing out as the standout gainer. (Source: CNBC)</p>
+          <span class="tag">Global Markets</span>
+        </div>
+      </div>
+      <div class="hit">
+        <div class="hit-icon">🛢️</div>
+        <div class="hit-body">
+          <strong>Oil Pulls Back Below 0 as Iran Ceasefire Talks Progress</strong>
+          <p>West Texas Intermediate crude fell 0.4% to around 9/barrel and Brent crude shed 0.3% to near 5, as investors bet that US-Iran peace negotiations could ease supply concerns. Oil's retreat helped lift equity futures this morning. President Trump said he expects a "great deal" before the current ceasefire expires Wednesday. (Source: CNBC, Bloomberg)</p>
+          <span class="tag">Energy</span>
+        </div>
+      </div>
+      <div class="hit">
+        <div class="hit-icon">🤖</div>
+        <div class="hit-body">
+          <strong>Embodied AI Startup X Square Robot Raises 76M Series B</strong>
+          <p>X Square Robot, a startup building general-purpose AI-powered physical robots, closed a 76 million Series B co-led by Xiaomi and Sequoia China. The round reflects surging investor appetite for "embodied AI" — systems where foundation models are integrated into real-world robots. Global startup funding hit a record 97B in Q1 2026. (Source: TechStartups, TechCrunch)</p>
+          <span class="tag">AI & Startups</span>
         </div>
       </div>
     </div>
@@ -937,8 +1037,8 @@
     </div>
     <div class="campus-card">
       <div class="kicker">Susquehanna University</div>
-      <h3 id="campus-headline">Finance Club Hosts Mock Trading Challenge Amid Real Market Volatility</h3>
-      <p id="campus-body">Susquehanna University's Finance Club is running its annual mock stock trading competition through Friday — and this year, students are navigating a market that looks nothing like last semester's calm. Open to all SU students. Sign up at the Fisher Hall bulletin board.</p>
+      <h3 id="campus-headline">SU Students Place in Top Four at Pennsylvania Future Business Leaders Competition</h3>
+      <p id="campus-body">Twelve Susquehanna University students recently earned top-four finishes at the Pennsylvania Future Business Leaders of America (FBLA) competition, demonstrating the strength of SU's business program and setting them up for the national competition. Meanwhile, Jennette McCurdy — actress and bestselling author of "I'm Glad My Mom Died" — will speak at SU on Thursday, April 23, at 7 p.m. in Weber Auditorium. Free and open to the SU community.</p>
     </div>
   </div>
 
@@ -950,8 +1050,8 @@
     </div>
     <div class="career-card">
       <div class="kicker">This Week's Insight</div>
-      <h3 id="career-headline">Recession Fears Are Actually Boosting Demand for These Finance Roles</h3>
-      <p id="career-body">Counter-intuitively, economic uncertainty is driving hiring in risk analysis, compliance, and financial advisory. LinkedIn data shows a 23% jump in financial analyst postings at mid-sized firms year-over-year. Check SU's Handshake portal for the finance recruiting workshop on April 15.</p>
+      <h3 id="career-headline">The 2026 Job Market Rewards Specialists — Here's What That Means for You</h3>
+      <p id="career-body">Entry-level salaries in 2026 range from 0,000 to 33,000, but the biggest paychecks are going to graduates with a specific, demonstrable skill — not generalists. Financial analysts, data analysts, cloud engineers, and cybersecurity analysts are commanding the top starting salaries. The takeaway for SU students: internships, certifications (like CFA Level 1 or AWS), and hands-on project experience are now the differentiators that move your resume to the top of the pile. Start building that specialization now, before senior year.</p>
     </div>
   </div>
 
@@ -963,9 +1063,9 @@
     </div>
     <div class="story-feature">
       <div class="kicker">Founder Story</div>
-      <h2 id="startup-headline">Pave Raises $110M to Help Gen Z Build Credit From Scratch</h2>
-      <p id="startup-body">Pave, a financial health platform targeting young adults, closed a $110 million Series C led by Andreessen Horowitz. The startup helps users under 30 build credit through rent and utility payment reporting, reaching 2 million users since launching in 2022.</p>
-      <a class="read-more" id="startup-link" href="https://techcrunch.com" target="_blank">Read the full story →</a>
+      <h2 id="startup-headline">X Square Robot: The Startup Betting That AI Belongs in a Physical Body</h2>
+      <p id="startup-body">While most AI startups fight over software, X Square Robot is wiring large language models into physical robots that can operate in the real world — warehouses, factories, and beyond. The Beijing-based startup just raised 76 million in a Series B led by Xiaomi and Sequoia China, valuing it among the most well-funded robotics startups globally. As labor costs rise and supply chains remain fragile, embodied AI may be the next frontier — and the investors pouring billions into this space seem to agree.</p>
+      <a class="read-more" id="startup-link" href="https://techstartups.com/2026/04/20/top-startup-and-tech-funding-news-april-20-2025/" target="_blank">Read the full story →</a>
     </div>
   </div>
 
@@ -977,12 +1077,12 @@
     </div>
     <div class="athlete-card">
       <div class="athlete-photo-wrap">
-        <img id="athlete-photo" src="https://suriverhawks.com/images/2025/8/22/Nicky_Gray.JPG" alt="Athlete photo" onerror="this.style.display='none';document.getElementById('athlete-initials').style.display='flex'">
-        <div class="athlete-initials" id="athlete-initials">NG</div>
+        <img id="athlete-photo" src="https://suriverhawks.com/images/2025/12/9/CJ_Orrego.JPG" alt="Athlete photo" onerror="this.style.display='none';document.getElementById('athlete-initials').style.display='flex'">
+        <div class="athlete-initials" id="athlete-initials">CO</div>
       </div>
       <div class="athlete-info">
-        <div class="athlete-sport-tag" id="athlete-sport-tag">MEN'S SOCCER</div>
-        <h2 class="athlete-name" id="athlete-name">Nicky Gray</h2>
+        <div class="athlete-sport-tag" id="athlete-sport-tag">BASEBALL</div>
+        <h2 class="athlete-name" id="athlete-name">CJ Orrego</h2>
         <div class="athlete-meta-row">
           <span id="athlete-position"></span>
           <span class="dot">·</span>
@@ -990,9 +1090,20 @@
           <span class="dot">·</span>
           <span id="athlete-hometown"></span>
         </div>
-        <p class="athlete-bio" id="athlete-bio">Competing for the River Hawks in Men's Soccer.</p>
-        <a class="read-more" id="athlete-link" href="https://suriverhawks.com/sports/mens-soccer/roster/nicky-gray/12728" target="_blank">Full profile on SU Athletics →</a>
+        <p class="athlete-bio" id="athlete-bio">Competing for the River Hawks in Baseball.</p>
+        <a class="read-more" id="athlete-link" href="https://suriverhawks.com/sports/baseball/roster/cj-orrego/13053" target="_blank">Full profile on SU Athletics →</a>
       </div>
+    </div>
+  </div>
+
+  <!-- RIVER HAWKS SCORECARD -->
+  <div id="scorecard">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>River Hawks Scorecard</span>
+      <span class="section-badge">SU Athletics</span>
+    </div>
+    <div id="scorecard-games">
+      <p class="scorecard-no-data">No recent game results found. Check <a href="https://suriverhawks.com" target="_blank">suriverhawks.com</a> for the latest scores.</p>
     </div>
   </div>
 
@@ -1003,9 +1114,9 @@
     </div>
     <div class="term-card">
       <div class="label">Business Term · Know It Before Your Interview</div>
-      <div class="term" id="term-word">Tariff</div>
-      <div class="definition" id="term-def">A tax imposed by a government on goods imported from another country, used to protect domestic industries or generate revenue.</div>
-      <div class="example" id="term-example">The new 25% tariff on steel imports means U.S. automakers now pay more for foreign-made steel, raising production costs.</div>
+      <div class="term" id="term-word">Succession Planning</div>
+      <div class="definition" id="term-def">The deliberate process by which an organization identifies and develops internal candidates to fill key leadership roles when they become vacant — whether due to retirement, resignation, or other transitions.</div>
+      <div class="example" id="term-example">Apple's announcement that John Ternus will succeed Tim Cook is a textbook example of succession planning: Ternus spent 25 years inside the company before being tapped for the top job, ensuring continuity of culture and product vision.</div>
     </div>
   </div>
 
@@ -1016,12 +1127,12 @@
     </div>
     <div class="poll-card">
       <div class="label">Cast your vote · Results update live</div>
-      <h3 id="poll-question">Will the new tariffs push the U.S. into a recession in 2026?</h3>
+      <h3 id="poll-question">Apple just named John Ternus as its next CEO. What's your take on the leadership change?</h3>
       <div class="poll-options" id="poll-options">
-        <button class="poll-btn" onclick="vote(0)"><div class="bar" id="bar-0"></div><span id="opt-0">Yes — it's already happening</span><span class="pct" id="pct-0"></span></button>
-        <button class="poll-btn" onclick="vote(1)"><div class="bar" id="bar-1"></div><span id="opt-1">Probably, within 6 months</span><span class="pct" id="pct-1"></span></button>
-        <button class="poll-btn" onclick="vote(2)"><div class="bar" id="bar-2"></div><span id="opt-2">No — economy is resilient</span><span class="pct" id="pct-2"></span></button>
-        <button class="poll-btn" onclick="vote(3)"><div class="bar" id="bar-3"></div><span id="opt-3">Too early to tell</span><span class="pct" id="pct-3"></span></button>
+        <button class="poll-btn" onclick="vote(0)"><div class="bar" id="bar-0"></div><span id="opt-0">Great pick — engineers should lead Apple</span><span class="pct" id="pct-0"></span></button>
+        <button class="poll-btn" onclick="vote(1)"><div class="bar" id="bar-1"></div><span id="opt-1">Nervous — Tim Cook was irreplaceable</span><span class="pct" id="pct-1"></span></button>
+        <button class="poll-btn" onclick="vote(2)"><div class="bar" id="bar-2"></div><span id="opt-2">Too early to judge Ternus</span><span class="pct" id="pct-2"></span></button>
+        <button class="poll-btn" onclick="vote(3)"><div class="bar" id="bar-3"></div><span id="opt-3">Doesn't matter — the products speak for themselves</span><span class="pct" id="pct-3"></span></button>
       </div>
       <div class="poll-footer">
         <span id="vote-count">Be the first to vote</span>
@@ -1037,8 +1148,8 @@
     </div>
     <div class="closer">
       <div class="label">Stat of the Day</div>
-      <div class="stat" id="closer-stat">$2.4 trillion</div>
-      <div class="context" id="closer-context">The estimated value wiped from U.S. stock markets in a single day — one of the largest single-day losses in market history.</div>
+      <div class="stat" id="closer-stat">$297 Billion</div>
+      <div class="context" id="closer-context">Global startup funding raised in Q1 2026 alone — a new quarterly record, fueled in part by OpenAI's $122 billion round at an $852 billion valuation. Welcome to the age of trillion-dollar AI.</div>
       <div class="sign-off">That's your <em>Susky Times</em> for today. See you tomorrow morning.</div>
     </div>
   </div>
@@ -1066,9 +1177,9 @@
 ============================================================ -->
 <footer>
   <strong>The Susky Times</strong><br>
-  Daily business news for <a href="https://www.susquehanna.edu">Susquehanna University</a> students.<br>
-  New issue every morning. Read by the ambitious.<br><br>
-  <a href="archive.html">Archive</a> · <a href="mailto:suskytimes@gmail.com">Contact</a> · <a href="#" onclick="unsubscribe()">Unsubscribe</a><br><br>
+  Your daily dose of business news, made for <a href="https://www.susquehanna.edu">Susquehanna University</a> students.<br>
+  New issue drops every weekday morning. 🗞️<br><br>
+  <a href="archive.html">Archive</a> · <a href="mailto:thesuskytimes@gmail.com">Contact</a> · <a href="mailto:thesuskytimes@gmail.com?subject=Unsubscribe">Unsubscribe</a><br><br>
   <em>Not financial advice. Not affiliated with Susquehanna University.</em>
 </footer>
 
@@ -1161,7 +1272,7 @@
       if (hasVoted) {
         bar.style.width = pct + '%';
         pctEl.textContent = pct + '%';
-        btn.classList.add(i === winner ? 'winner' : '');
+        if (i === winner) btn.classList.add('winner');
         btn.disabled = true;
         btn.style.cursor = 'default';
       }
@@ -1221,8 +1332,15 @@
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
   }
 
-  function unsubscribe() { alert('To unsubscribe from the daily email, click "unsubscribe" at the bottom of any email you receive from us.'); }
-  const seedVotes = [22, 31, 14, 18];
+  function unsubscribeUser() {
+    localStorage.removeItem('st-subscribed');
+    const btn = document.getElementById('subscribe-btn');
+    const inp = document.getElementById('email-input');
+    if (btn) { btn.textContent = 'Subscribe free →'; btn.disabled = false; btn.style.background = ''; }
+    if (inp) inp.style.display = '';
+    alert('Done! You'll be removed from the next send. Or email us at thesuskytimes@gmail.com.');
+  }
+  const seedVotes = [18, 12, 25, 10];
 </script>
 
 </body>
