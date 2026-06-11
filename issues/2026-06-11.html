@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Susky Times — Daily Business News for SU Students</title>
+  <meta name="description" content="The Susky Times: Business news, career insights, and entrepreneurship stories — built for Susquehanna University students." />
+  <meta property="og:title" content="The Susky Times" />
+  <meta property="og:description" content="Daily business news for SU students. Free. Smart. 5 minutes." />
+  <meta property="og:image" content="https://suskytimes.com/og-image.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+    ============================================================ */
+    :root {
+      --ink:        #0f172a;
+      --ink-light:  #475569;
+      --gold:       #d97706;
+      --gold-light: #fef3c7;
+      --gold-dark:  #92400e;
+      --red:        #dc2626;
+      --green:      #16a34a;
+      --bg:         #fffdf7;
+      --bg-card:    #ffffff;
+      --border:     #e2e8f0;
+      --serif:      'Playfair Display', Georgia, serif;
+      --sans:       'Inter', system-ui, sans-serif;
+      --max-w:      720px;
+      --radius:     10px;
+      --shadow:     0 2px 16px rgba(0,0,0,.06);
+    }
+    [data-theme="dark"] {
+      --ink:        #f1f5f9;
+      --ink-light:  #94a3b8;
+      --gold:       #fbbf24;
+      --gold-light: #1c1407;
+      --gold-dark:  #fde68a;
+      --bg:         #0f172a;
+      --bg-card:    #1e293b;
+      --border:     #334155;
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      transition: background .25s, color .25s;
+    }
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { max-width: 100%; border-radius: var(--radius); }
+
+    /* ============================================================
+       TOP BAR
+    ============================================================ */
+    .topbar {
+      background: var(--ink);
+      color: #fff;
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 7px 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--sans);
+    }
+    .topbar a { color: var(--gold); }
+    .topbar-right { display: flex; gap: 1rem; align-items: center; }
+    .dark-toggle {
+      background: none;
+      border: 1px solid rgba(255,255,255,.3);
+      color: #fff;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: .68rem;
+      cursor: pointer;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .dark-toggle:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ============================================================
+       MASTHEAD
+    ============================================================ */
+    .masthead {
+      border-bottom: 3px double var(--border);
+      text-align: center;
+      padding: 1.8rem 1rem 1.2rem;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+    .masthead-eyebrow {
+      font-size: .7rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: .4rem;
+    }
+    .masthead-title {
+      font-family: var(--serif);
+      font-size: clamp(2.6rem, 8vw, 4.2rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -.02em;
+      color: var(--ink);
+    }
+    .masthead-title span { color: var(--gold); }
+    .masthead-tagline {
+      font-size: .8rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-top: .5rem;
+      font-weight: 600;
+    }
+    .masthead-meta {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      font-size: .75rem;
+      color: var(--ink-light);
+      margin-top: .9rem;
+      padding-top: .9rem;
+      border-top: 1px solid var(--border);
+    }
+    .masthead-meta span { display: flex; align-items: center; gap: .35rem; }
+
+    /* ============================================================
+       NAV
+    ============================================================ */
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      background: var(--ink);
+      max-width: var(--max-w);
+      margin: 0 auto;
+      border-radius: 0 0 var(--radius) var(--radius);
+      overflow: hidden;
+    }
+    .nav a {
+      color: rgba(255,255,255,.75);
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .55rem .9rem;
+      transition: background .2s, color .2s;
+    }
+    .nav a:hover, .nav a.active {
+      background: var(--gold);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    /* ============================================================
+       MAIN LAYOUT
+    ============================================================ */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 1rem 4rem;
+    }
+
+    /* ============================================================
+       GREETING BANNER
+    ============================================================ */
+    .greeting {
+      margin: 1.8rem 0 0;
+      padding: 1.2rem 1.4rem;
+      background: var(--gold-light);
+      border-left: 4px solid var(--gold);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-size: .95rem;
+      color: var(--ink);
+    }
+    .greeting strong { font-size: 1.05rem; }
+
+    /* ============================================================
+       MARKET SNAPSHOT
+    ============================================================ */
+    .markets {
+      margin: 1.4rem 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .7rem;
+    }
+    .market-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .8rem 1rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .market-card .name {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+    }
+    .market-card .value {
+      font-size: 1.15rem;
+      font-weight: 700;
+      font-family: var(--serif);
+      margin: .2rem 0 .1rem;
+    }
+    .market-card .change { font-size: .78rem; font-weight: 600; }
+    .up   { color: var(--green); }
+    .down { color: var(--red); }
+
+    /* ── ATHLETE OF THE DAY ─────────────────────────────────── */
+    .athlete-card {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      padding: 1.4rem 1.6rem;
+    }
+    .athlete-photo-wrap {
+      flex-shrink: 0;
+      width: 110px;
+      height: 140px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--gold);
+      position: relative;
+    }
+    .athlete-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+    .athlete-initials {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: .05em;
+    }
+    .athlete-info { flex: 1; }
+    .athlete-sport-tag {
+      display: inline-block;
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      background: var(--navy);
+      color: #fff;
+      border-radius: 20px;
+      padding: 2px 9px;
+      margin-bottom: .5rem;
+    }
+    .athlete-name {
+      font-family: var(--serif);
+      font-size: 1.65rem;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 .4rem;
+    }
+    .athlete-meta-row {
+      font-size: .82rem;
+      color: #666;
+      margin-bottom: .7rem;
+    }
+    .athlete-meta-row .dot { margin: 0 .3rem; }
+    .athlete-bio {
+      font-size: .9rem;
+      line-height: 1.6;
+      margin: 0 0 .8rem;
+    }
+    @media (max-width: 520px) {
+      .athlete-card { flex-direction: column; align-items: center; text-align: center; }
+      .athlete-meta-row { text-align: center; }
+    }
+
+    /* ── RIVER HAWKS SCORECARD ──────────────────────────────────── */
+    .game-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      margin-bottom: .9rem;
+      box-shadow: var(--shadow);
+    }
+    .game-meta {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: .35rem;
+    }
+    .game-score-row {
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      margin-bottom: .8rem;
+    }
+    .game-score-team {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .game-score-num {
+      font-family: var(--serif);
+      font-size: 1.7rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .game-score-num.win  { color: var(--green); }
+    .game-score-num.loss { color: var(--red); }
+    .game-score-sep { font-size: 1.1rem; color: var(--ink-light); }
+    .game-result-badge {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: auto;
+    }
+    .game-result-badge.win  { background: #dcfce7; color: var(--green); }
+    .game-result-badge.loss { background: #fee2e2; color: var(--red); }
+    .potg-row {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      background: var(--gold-light);
+      border-radius: 8px;
+      padding: .65rem .9rem;
+      border: 1px solid #fde68a;
+    }
+    .potg-star {
+      font-size: 1.1rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: .05rem;
+    }
+    .potg-info { flex: 1; min-width: 0; }
+    .potg-label {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      margin-bottom: .15rem;
+    }
+    .potg-name {
+      font-size: .92rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .potg-stats {
+      font-size: .78rem;
+      color: var(--ink-light);
+      margin-top: .1rem;
+    }
+    .scorecard-no-data {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--ink-light);
+      font-size: .88rem;
+      font-style: italic;
+    }
+
+    /* ============================================================
+       SECTION HEADERS
+    ============================================================ */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin: 2.2rem 0 1rem;
+      padding-bottom: .5rem;
+      border-bottom: 2px solid var(--ink);
+    }
+    .section-header .label {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .section-badge {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      background: var(--gold);
+      color: #fff;
+      border-radius: 20px;
+      padding: 2px 8px;
+    }
+
+    /* ============================================================
+       STORY CARDS
+    ============================================================ */
+    .story-feature {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1rem;
+    }
+    .story-feature .kicker {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .4rem;
+    }
+    .story-feature h2 {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: .7rem;
+    }
+    .story-feature p { font-size: .92rem; color: var(--ink-light); line-height: 1.7; margin-bottom: .7rem; }
+    .story-feature .read-more {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .story-feature .read-more:hover { text-decoration: underline; }
+
+    /* Quick hits */
+    .quick-hits { display: flex; flex-direction: column; gap: .8rem; }
+    .hit {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      box-shadow: var(--shadow);
+    }
+    .hit-icon { width: 20px; height: 20px; flex-shrink: 0; margin-top: .15rem; color: var(--gold); }
+    .s-icon { width: 18px; height: 18px; display: inline-block; vertical-align: middle; margin-right: .3rem; color: var(--ink); position: relative; top: -1px; }
+    .meta-icon { width: 13px; height: 13px; display: inline-block; vertical-align: middle; color: var(--ink-light); }
+    .hit-body {}
+    .hit-body strong {
+      font-size: .9rem;
+      font-weight: 700;
+      display: block;
+      margin-bottom: .25rem;
+    }
+    .hit-body p { font-size: .84rem; color: var(--ink-light); line-height: 1.6; }
+    .hit-body .tag {
+      display: inline-block;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1px 7px;
+      margin-top: .35rem;
+    }
+
+    /* ============================================================
+       CAMPUS SPOTLIGHT
+    ============================================================ */
+    .campus-card {
+      background: var(--ink);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      margin-bottom: 1rem;
+    }
+    .campus-card .kicker {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .4rem;
+    }
+    .campus-card h3 {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: .5rem;
+    }
+    .campus-card p { font-size: .84rem; color: rgba(255,255,255,.75); line-height: 1.65; }
+
+    /* ============================================================
+       TERM OF THE DAY
+    ============================================================ */
+    .term-card {
+      background: linear-gradient(135deg, var(--gold) 0%, #b45309 100%);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      margin-bottom: 1rem;
+    }
+    .term-card .label {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.8);
+      margin-bottom: .3rem;
+    }
+    .term-card .term {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      font-weight: 900;
+      margin-bottom: .4rem;
+    }
+    .term-card .definition { font-size: .88rem; line-height: 1.65; color: rgba(255,255,255,.92); }
+    .term-card .example {
+      margin-top: .6rem;
+      font-size: .8rem;
+      background: rgba(0,0,0,.15);
+      border-radius: 6px;
+      padding: .5rem .8rem;
+      font-style: italic;
+      color: rgba(255,255,255,.85);
+    }
+
+    /* ============================================================
+       POLL OF THE DAY
+    ============================================================ */
+    .poll-card {
+      background: var(--bg-card);
+      border: 2px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+    }
+    .poll-card .label {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: .5rem;
+    }
+    .poll-card h3 {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.35;
+    }
+    .poll-options { display: flex; flex-direction: column; gap: .5rem; }
+    .poll-btn {
+      width: 100%;
+      padding: .7rem 1rem;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: .88rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all .18s;
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+    }
+    .poll-btn:hover { border-color: var(--gold); background: var(--gold-light); }
+    .poll-btn .bar {
+      position: absolute;
+      top: 0; left: 0; height: 100%;
+      background: var(--gold-light);
+      transition: width .4s ease;
+      z-index: 0;
+      border-radius: 6px;
+    }
+    .poll-btn span { position: relative; z-index: 1; }
+    .poll-btn .pct {
+      position: absolute;
+      right: 1rem; top: 50%;
+      transform: translateY(-50%);
+      font-weight: 700;
+      font-size: .8rem;
+      color: var(--gold-dark);
+      z-index: 1;
+    }
+    .poll-btn.voted { border-color: var(--gold); }
+    .poll-btn.winner { border-color: var(--gold); background: var(--gold-light); }
+    .poll-footer {
+      margin-top: .7rem;
+      font-size: .75rem;
+      color: var(--ink-light);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ============================================================
+       CAREER CORNER
+    ============================================================ */
+    .career-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      background: var(--bg-card);
+      box-shadow: var(--shadow);
+    }
+    .career-card .kicker {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: .4rem;
+    }
+    .career-card h3 { font-family: var(--serif); font-size: 1.05rem; margin-bottom: .5rem; }
+    .career-card p  { font-size: .84rem; color: var(--ink-light); line-height: 1.65; }
+
+    /* ============================================================
+       THE CLOSER
+    ============================================================ */
+    .closer {
+      text-align: center;
+      padding: 2rem 1.2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .closer .label {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: .5rem;
+    }
+    .closer .stat {
+      font-family: var(--serif);
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: .4rem;
+    }
+    .closer .context { font-size: .88rem; color: var(--ink-light); max-width: 380px; margin: 0 auto .8rem; line-height: 1.6; }
+    .closer .sign-off { font-size: .8rem; color: var(--ink-light); font-style: italic; }
+
+    /* ============================================================
+       EMAIL SIGNUP
+    ============================================================ */
+    .signup-bar {
+      margin: 2rem 0;
+      background: var(--ink);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      color: #fff;
+      text-align: center;
+    }
+    .signup-bar h3 {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: .3rem;
+    }
+    .signup-bar p { font-size: .82rem; color: rgba(255,255,255,.7); margin-bottom: .9rem; }
+    .signup-form { display: flex; gap: .5rem; max-width: 400px; margin: 0 auto; }
+    .signup-form input {
+      flex: 1;
+      padding: .6rem .9rem;
+      border-radius: 8px;
+      border: none;
+      font-size: .88rem;
+      outline: none;
+    }
+    .signup-form button {
+      padding: .6rem 1.1rem;
+      background: var(--gold);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 700;
+      font-size: .82rem;
+      cursor: pointer;
+      white-space: nowrap;
+      letter-spacing: .04em;
+    }
+    .signup-form button:hover { background: var(--gold-dark); }
+
+    /* ============================================================
+       SHARE ROW
+    ============================================================ */
+    .share-row {
+      display: flex;
+      gap: .6rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 1.2rem 0;
+    }
+    .share-btn {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .5rem 1rem;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: var(--bg-card);
+      font-size: .78rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--ink);
+      transition: all .18s;
+    }
+    .share-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .share-btn svg { width: 15px; height: 15px; }
+
+    /* ============================================================
+       ARCHIVE STRIP
+    ============================================================ */
+    .archive-strip {
+      display: flex;
+      gap: .5rem;
+      margin: 1.8rem 0 0;
+      overflow-x: auto;
+      padding-bottom: .3rem;
+    }
+    .archive-strip::-webkit-scrollbar { height: 3px; }
+    .archive-strip::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    .archive-pill {
+      flex-shrink: 0;
+      padding: .4rem .85rem;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: var(--bg-card);
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--ink-light);
+      cursor: pointer;
+      transition: all .18s;
+      white-space: nowrap;
+    }
+    .archive-pill:hover, .archive-pill.active {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,.55);
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: .75rem;
+      line-height: 1.7;
+    }
+    footer strong { color: var(--gold); }
+    footer a { color: rgba(255,255,255,.6); }
+    footer a:hover { color: var(--gold); }
+
+    /* ============================================================
+       STREAK BADGE
+    ============================================================ */
+    .streak-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .72rem;
+      font-weight: 700;
+      background: var(--gold-light);
+      color: var(--gold-dark);
+      border: 1px solid var(--gold);
+      border-radius: 20px;
+      padding: 3px 10px;
+      cursor: default;
+    }
+
+    /* ============================================================
+       READING PROGRESS BAR
+    ============================================================ */
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 0%;
+      height: 3px;
+      background: var(--gold);
+      z-index: 9999;
+      transition: width .1s;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 540px) {
+      .markets { grid-template-columns: repeat(3, 1fr); gap: .4rem; }
+      .market-card { padding: .6rem .5rem; }
+      .market-card .value { font-size: .95rem; }
+      .signup-form { flex-direction: column; }
+      .topbar { font-size: .65rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Reading progress bar -->
+<div id="progress-bar"></div>
+
+<!-- ============================================================
+     TOP BAR
+============================================================ -->
+<div class="topbar">
+  <span>susquehanna university · selinsgrove, pa</span>
+  <div class="topbar-right">
+    <span id="streak-display"></span>
+    <button class="dark-toggle" onclick="toggleDark()"><svg style="width:10px;height:10px;display:inline;vertical-align:middle;margin-right:4px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     MASTHEAD
+============================================================ -->
+<div class="masthead">
+  <div class="masthead-eyebrow">Est. 2026 · Issue #<span id="issue-num">66</span></div>
+  <div class="masthead-title">The Susky<span> Times</span></div>
+  <div class="masthead-tagline">Business news · 5-minute read · Susquehanna University</div>
+  <div class="masthead-meta">
+    <span><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> <span id="today-date">Thursday, June 11, 2026</span></span>
+    <span><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span id="read-time">~5 min read</span></span>
+    <span><svg class="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> <span id="sub-count"><!-- SUB_COUNT --> readers</span></span>
+  </div>
+</div>
+
+<!-- ============================================================
+     NAV
+============================================================ -->
+<nav class="nav">
+  <a href="#markets">Markets</a>
+  <a href="#top-story">Top Story</a>
+  <a href="#quick-hits">Quick Hits</a>
+  <a href="#campus">Campus</a>
+  <a href="#careers">Careers</a>
+  <a href="#poll">Poll</a>
+  <a href="archive.html">Archive</a>
+</nav>
+
+<!-- ============================================================
+     MAIN CONTENT
+============================================================ -->
+<div class="container">
+
+  <!-- ARCHIVE STRIP -->
+  <div class="archive-strip" id="archive-strip">
+    <div class="archive-pill active">Today · Apr 8</div>
+    <div class="archive-pill">Apr 7</div>
+    <div class="archive-pill">Apr 6</div>
+    <div class="archive-pill">Apr 5</div>
+    <div class="archive-pill">Apr 4</div>
+    <div class="archive-pill">Apr 3</div>
+    <div class="archive-pill">Apr 2</div>
+  </div>
+
+  <!-- GREETING -->
+  <div class="greeting">
+    <strong>☕ Good morning, River Hawks!</strong> It's <strong id="day-greeting">Thursday</strong> and a lot happened overnight. We did the reading so you don't have to — here's your 5-minute business briefing before you even finish breakfast.
+  </div>
+
+  <!-- MARKETS -->
+  <div id="markets">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Market Snapshot</span>
+      <span class="section-badge">Updated Daily</span>
+    </div>
+    <div class="markets" id="market-data">
+      <div class="market-card">
+        <div class="name">S&amp;P 500</div>
+        <div class="value" id="sp500-val">5,909</div>
+        <div class="change up" id="sp500-chg">+0.21%</div>
+      </div>
+      <div class="market-card">
+        <div class="name">NASDAQ</div>
+        <div class="value" id="nasdaq-val">19,218</div>
+        <div class="change down" id="nasdaq-chg">+0.26%</div>
+      </div>
+      <div class="market-card">
+        <div class="name">Dow Jones</div>
+        <div class="value" id="dow-val">42,151</div>
+        <div class="change up" id="dow-chg">+0.45%</div>
+      </div>
+    </div>
+    <p style="font-size:.7rem;color:var(--ink-light);text-align:right;margin-top:-.3rem;">Data from previous close · Not financial advice</p>
+  </div>
+
+  <!-- SIGN UP BAR (above fold) -->
+  <div class="signup-bar">
+    <h3>📬 Get it in your inbox, free</h3>
+    <p>Hundreds of SU students read The Susky Times every morning. Takes 2 seconds to sign up.</p>
+    <div class="signup-form">
+      <input type="email" placeholder="your@susquehanna.edu" id="email-input" autocomplete="email" />
+      <button onclick="handleSignup()" id="subscribe-btn">Subscribe free →</button>
+    </div>
+    <p style="font-size:.72rem;margin-top:.5rem;color:var(--ink-light)">No spam. No fees. Unsubscribe any time.</p>
+  </div>
+
+  <!-- TOP STORY -->
+  <div id="top-story">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2C14.5 2 14 7 11 10c-3 3-7 3.5-7 3.5S6.5 17 9 19c2.5 2 5.5 3 8 1 2.5-2 3-5 2-8-.7-2-2.5-4-4.5-10z"/><path d="M8.5 14c0 0 .5 3 3.5 4"/></svg>Top Story</span>
+      <span class="section-badge">🔥 Today's Big One</span>
+    </div>
+    <div class="story-feature">
+      <div class="kicker">Global Business</div>
+      <h2 id="top-story-headline">SpaceX Prices the Largest IPO in History at $135 Per Share</h2>
+      <p id="top-story-body-1">SpaceX priced its initial public offering after market close Wednesday at $135 per share, targeting a $75 billion raise at a staggering $1.77 trillion valuation. If completed as planned, the listing — set to debut on the Nasdaq Thursday under ticker SPCX — will surpass Saudi Aramco's 2019 offering to become the largest IPO in recorded history. The roadshow launched June 4 and was reportedly multiple times oversubscribed, reflecting explosive investor demand.</p>
+      <p id="top-story-body-2">The company, led by Elon Musk, has expanded well beyond rockets into satellite internet (Starlink), point-to-point Earth travel, and defense contracts. The IPO gives everyday investors their first chance to own a piece of SpaceX, which until now was only accessible to institutional and accredited investors in private markets.</p>
+      <p id="top-story-body-3"><strong>The takeaway:</strong> Sectors most exposed to tariffs — autos, consumer electronics, agriculture — could see hiring freezes or restructuring in Q3. Meanwhile, domestic manufacturing, legal/compliance, and trade finance roles are quietly heating up. Keep that on your radar.</p>
+      <a class="read-more" id="top-story-link" href="https://www.cnbc.com/2026/06/09/spacex-ipo-explained-stock-price-date.html" target="_blank">Read full story → Reuters</a>
+    </div>
+  </div>
+
+  <!-- QUICK HITS -->
+  <div id="quick-hits">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Quick Hits</span>
+      <span class="section-badge">5 Stories</span>
+    </div>
+    <div class="quick-hits" id="hits-container">
+      <div class="hit">
+        <div class="hit-icon">💡</div>
+        <div class="hit-body">
+          <strong>OpenAI Goes Enterprise via Oracle Cloud</strong>
+          <p>OpenAI announced that enterprise customers can now access its frontier AI models and Codex through existing Oracle Universal Credits — no separate procurement required. The deal deepens the race to embed AI into corporate infrastructure and signals that cloud distribution is the new battleground for AI platforms.</p>
+          <span class="tag">Tech & AI</span>
+        </div>
+      </div>
+      <div class="hit">
+        <div class="hit-icon">📈</div>
+        <div class="hit-body">
+          <strong>Wholesale Prices Surge 6.5% Year-Over-Year — Highest Since 2022</strong>
+          <p>The Producer Price Index rose 1.1% in May and 6.5% over the past year, the biggest 12-month jump since November 2022. Energy drove the spike, with wholesale gasoline up nearly 70% year-over-year amid U.S.-Iran tensions. Inflation data like this moves Fed rate-cut timelines — critical knowledge for finance students.</p>
+          <span class="tag">Economy</span>
+        </div>
+      </div>
+      <div class="hit">
+        <div class="hit-icon">🏢</div>
+        <div class="hit-body">
+          <strong>Ramp Hits $44B Valuation with $750M Round</strong>
+          <p>Spend-management fintech Ramp raised $750 million led by ICONIQ, GIC, and Ontario Teachers' Pension Plan, nearly tripling its valuation in one year. The company now has 70,000+ customers including Visa, Uber, and Shopify, with annual revenue topping $1.5 billion. Ramp was founded by Harvard classmates who started with a simple corporate card idea.</p>
+          <span class="tag">Business</span>
+        </div>
+      </div>
+      <div class="hit">
+        <div class="hit-icon">🎓</div>
+        <div class="hit-body">
+          <strong>Fall 2026 Internship Applications Are Open Now</strong>
+          <p>With roughly 90% of summer 2026 internship slots filled, recruiters have shifted focus to fall and winter cycles. Major firms in finance, consulting, and tech are already posting Fall 2026 roles. If you missed summer, don't wait — fall applications move fast and many close by late July.</p>
+          <span class="tag">Careers</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+      <div class="hit">
+        <div class="hit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21 4 19.5 2.5S18 2 16.5 3.5L13 7 4.8 5.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg></div>
+        <div class="hit-body">
+          <strong>Airlines quietly raise prices as travel demand holds strong</strong>
+          <p>Despite economic uncertainty, airlines including Delta and United are raising summer fares 8–15%, citing strong leisure demand. The disconnect between consumer spending and market jitters is one of 2026's stranger economic stories.</p>
+          <span class="tag">Consumer Economy</span>
+        </div>
+      </div>
+
+      <div class="hit">
+        <div class="hit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></div>
+        <div class="hit-body">
+          <strong>Federal Reserve holds rates steady — for now</strong>
+          <p>The Fed held interest rates at 4.25–4.50% at its latest meeting, citing "elevated uncertainty." Translation: they're watching the tariff situation closely before making any moves. Rate cuts that investors had expected in early 2026 are now pushed to late summer at the earliest.</p>
+          <span class="tag">Macro / Finance</span>
+        </div>
+      </div>
+
+      <div class="hit">
+        <div class="hit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <div class="hit-body">
+          <strong>Rivian lands $5.8B deal with Volkswagen — and it might save both of them</strong>
+          <p>The EV maker's software partnership with VW is expanding rapidly, now including full platform-sharing agreements. This is a case study in how a cash-burning startup can pivot to a B2B licensing model to survive — and it's working.</p>
+          <span class="tag">EVs & Startups</span>
+        </div>
+      </div>
+
+      <div class="hit">
+        <div class="hit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <div class="hit-body">
+          <strong>TikTok's US future still murky as deadline passes (again)</strong>
+          <p>Another extension, another non-answer. ByteDance has until late spring to finalize a US buyer or face a ban — but no credible deal has materialized. Advertisers are hedging by doubling Instagram Reels budgets. Worth watching if you're interested in media or marketing.</p>
+          <span class="tag">Media & Tech</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CAMPUS SPOTLIGHT -->
+  <div id="campus">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Word on the Street</span>
+      <span class="section-badge">SU &amp; Local</span>
+    </div>
+    <div class="campus-card">
+      <div class="kicker">Susquehanna University</div>
+      <h3 id="campus-headline">SU Adds Three Alumni Leaders to Board of Trustees</h3>
+      <p id="campus-body">Susquehanna University has elected three new alumni to its Board of Trustees for four-year terms beginning May 2026. The new members are Rev. Karen Ward, Susan Mays Yu (private investment management, NYC), and Kyle Robertson (global impact strategy, Hain Celestial Group). Their additions strengthen the board's ties to finance, corporate sustainability, and community leadership.</p>
+    </div>
+  </div>
+
+  <!-- CAREER CORNER -->
+  <div id="careers">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg>Career Corner</span>
+      <span class="section-badge">For You</span>
+    </div>
+    <div class="career-card">
+      <div class="kicker">This Week's Insight</div>
+      <h3 id="career-headline">Fall 2026 Internships: Your Summer Recruiting Window Is Now</h3>
+      <p id="career-body">Summer 2026 internship slots are nearly gone, but fall recruiting is heating up. According to Extern's June 2026 guide, companies in finance, consulting, and tech are actively posting fall roles. Start applications now — many deadlines land in late July. Polish your LinkedIn, refresh your resume with spring semester projects, and target companies with rolling admissions. Being early in a fall cycle can be as valuable as landing a summer spot.</p>
+    </div>
+  </div>
+
+  <!-- STARTUP SPOTLIGHT -->
+  <div id="startup">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Startup Spotlight</span>
+      <span class="section-badge">Entrepreneurship</span>
+    </div>
+    <div class="story-feature">
+      <div class="kicker">Founder Story</div>
+      <h2 id="startup-headline">Ramp: Harvard Roommates Built a $44B Fintech Empire</h2>
+      <p id="startup-body">Founded by Eric Glyman and Karim Atiyeh — Harvard classmates — Ramp started as a corporate card that gave companies cash back. It's now a full AI-powered finance operating system with 70,000+ customers, $1.5B+ in annual revenue, and a $44 billion valuation after a $750M raise this month. Their latest product, Stack, automates accounting using AI. Ramp's story is a blueprint: solve a real enterprise pain point, build distribution through trust, and expand the product surface as you scale.</p>
+      <a class="read-more" id="startup-link" href="https://techcrunch.com/2026/06/04/ramp-raises-750m-at-44b-valuation-as-investors-hunger-for-fintechs-with-an-ai-story/" target="_blank">Read the full story →</a>
+    </div>
+  </div>
+
+  <!-- ATHLETE OF THE DAY -->
+  <div id="athlete">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0 1 12 0v2"/><path d="M12 12v4"/><path d="M9 16l3 4 3-4"/></svg>Athlete of the Day</span>
+      <span class="section-badge">River Hawks</span>
+    </div>
+    <div class="athlete-card">
+      <div class="athlete-photo-wrap">
+        <img id="athlete-photo" src="https://suriverhawks.com/images/2025/8/22/Jason_Krum.JPG" alt="Athlete photo" onerror="this.style.display='none';document.getElementById('athlete-initials').style.display='flex'">
+        <div class="athlete-initials" id="athlete-initials">JK</div>
+      </div>
+      <div class="athlete-info">
+        <div class="athlete-sport-tag" id="athlete-sport-tag">MEN'S SOCCER</div>
+        <h2 class="athlete-name" id="athlete-name">Jason Krum</h2>
+        <div class="athlete-meta-row">
+          <span id="athlete-position"></span>
+          <span class="dot">·</span>
+          <span id="athlete-year"></span>
+          <span class="dot">·</span>
+          <span id="athlete-hometown"></span>
+        </div>
+        <p class="athlete-bio" id="athlete-bio">Competing for the River Hawks in Men's Soccer.</p>
+        <a class="read-more" id="athlete-link" href="https://suriverhawks.com/sports/mens-soccer/roster/jason-krum/12730" target="_blank">Full profile on SU Athletics →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIVER HAWKS SCORECARD -->
+  <div id="scorecard">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>River Hawks Scorecard</span>
+      <span class="section-badge">SU Athletics</span>
+    </div>
+    <div id="scorecard-games">
+      <p class="scorecard-no-data">No recent game results found. Check <a href="https://suriverhawks.com" target="_blank">suriverhawks.com</a> for the latest scores.</p>
+    </div>
+  </div>
+
+  <!-- TERM OF THE DAY -->
+  <div id="term">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Term of the Day</span>
+    </div>
+    <div class="term-card">
+      <div class="label">Business Term · Know It Before Your Interview</div>
+      <div class="term" id="term-word">IPO (Initial Public Offering)</div>
+      <div class="definition" id="term-def">The first time a private company sells shares to the public on a stock exchange, allowing outside investors to buy ownership stakes. The company uses an investment bank to price shares and manage the offering.</div>
+      <div class="example" id="term-example">SpaceX priced its IPO at $135/share on June 11, 2026, valuing the company at $1.77 trillion — the largest IPO in history.</div>
+    </div>
+  </div>
+
+  <!-- POLL OF THE DAY -->
+  <div id="poll">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Poll of the Day</span>
+    </div>
+    <div class="poll-card">
+      <div class="label">Cast your vote · Results update live</div>
+      <h3 id="poll-question">Would you buy SpaceX (SPCX) stock on its first day of trading?</h3>
+      <div class="poll-options" id="poll-options">
+        <button class="poll-btn" onclick="vote(0)"><div class="bar" id="bar-0"></div><span id="opt-0">Yes — buying on day one</span><span class="pct" id="pct-0"></span></button>
+        <button class="poll-btn" onclick="vote(1)"><div class="bar" id="bar-1"></div><span id="opt-1">Wait and watch first</span><span class="pct" id="pct-1"></span></button>
+        <button class="poll-btn" onclick="vote(2)"><div class="bar" id="bar-2"></div><span id="opt-2">Too risky for me</span><span class="pct" id="pct-2"></span></button>
+        <button class="poll-btn" onclick="vote(3)"><div class="bar" id="bar-3"></div><span id="opt-3">No interest in space stocks</span><span class="pct" id="pct-3"></span></button>
+      </div>
+      <div class="poll-footer">
+        <span id="vote-count">Be the first to vote</span>
+        <span id="voted-msg"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE CLOSER -->
+  <div id="closer">
+    <div class="section-header">
+      <span class="label"><svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>The Closer</span>
+    </div>
+    <div class="closer">
+      <div class="label">Stat of the Day</div>
+      <div class="stat" id="closer-stat">6.5%</div>
+      <div class="context" id="closer-context">That's how much wholesale prices rose year-over-year through May 2026 — the steepest annual jump since November 2022. Energy costs drove most of the surge, with wholesale gasoline up nearly 70% from a year ago amid U.S.-Iran tensions. When producer prices spike like this, companies eventually pass costs to consumers — watch for it in your next grocery or gas bill.</div>
+      <div class="sign-off">That's your <em>Susky Times</em> for today. See you tomorrow morning.</div>
+    </div>
+  </div>
+
+  <!-- SHARE ROW -->
+  <div class="share-row">
+    <button class="share-btn" onclick="shareIG()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      Share to Instagram
+    </button>
+    <button class="share-btn" onclick="copyLink()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      Copy Link
+    </button>
+    <button class="share-btn" onclick="shareTwitter()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      Share on X
+    </button>
+  </div>
+
+</div><!-- end .container -->
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer>
+  <strong>The Susky Times</strong><br>
+  Your daily dose of business news, made for <a href="https://www.susquehanna.edu">Susquehanna University</a> students.<br>
+  New issue drops every weekday morning. 🗞️<br><br>
+  <a href="archive.html">Archive</a> · <a href="mailto:thesuskytimes@gmail.com">Contact</a> · <a href="mailto:thesuskytimes@gmail.com?subject=Unsubscribe">Unsubscribe</a><br><br>
+  <em>Not financial advice. Not affiliated with Susquehanna University.</em>
+</footer>
+
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+  // ── DATE & META ─────────────────────────────────────────────
+  const LAUNCH_DATE = new Date('2026-04-08');
+
+  function formatDate(d) {
+    return d.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  }
+  function dayName(d) {
+    return d.toLocaleDateString('en-US', { weekday:'long' });
+  }
+  function issueNumber(d) {
+    const diff = Math.floor((d - LAUNCH_DATE) / 86400000) + 1;
+    return Math.max(1, diff);
+  }
+
+  // Date, day greeting, and issue number are set by the daily publisher in the HTML.
+  // The issueNumber() function is kept here for reference.
+
+  // ── READING PROGRESS ────────────────────────────────────────
+  window.addEventListener('scroll', () => {
+    const el = document.documentElement;
+    const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+  });
+
+  // ── DARK MODE ───────────────────────────────────────────────
+  const saved = localStorage.getItem('st-theme');
+  if (saved === 'dark') { document.body.setAttribute('data-theme','dark'); }
+
+  function toggleDark() {
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      document.body.removeAttribute('data-theme');
+      localStorage.setItem('st-theme', 'light');
+    } else {
+      document.body.setAttribute('data-theme', 'dark');
+      localStorage.setItem('st-theme', 'dark');
+    }
+  }
+
+  // ── READING STREAK ──────────────────────────────────────────
+  (function() {
+    const key = 'st-streak';
+    const dateKey = 'st-last-visit';
+    const todayStr = new Date().toDateString();
+    let streak = parseInt(localStorage.getItem(key) || '0');
+    const lastVisit = localStorage.getItem(dateKey);
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+
+    if (lastVisit === todayStr) {
+      // same day, no change
+    } else if (lastVisit === yesterday.toDateString()) {
+      streak += 1;
+      localStorage.setItem(key, streak);
+      localStorage.setItem(dateKey, todayStr);
+    } else {
+      streak = 1;
+      localStorage.setItem(key, streak);
+      localStorage.setItem(dateKey, todayStr);
+    }
+
+    if (streak >= 2) {
+      document.getElementById('streak-display').innerHTML =
+        `<span class="streak-badge"><svg style="width:10px;height:10px;display:inline;vertical-align:middle;margin-right:3px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>${streak}-day streak</span>`;
+    }
+  })();
+
+  // ── POLL ────────────────────────────────────────────────────
+  const POLL_KEY = 'st-poll-' + new Date().toDateString();
+  let pollVotes = JSON.parse(localStorage.getItem(POLL_KEY + '-votes') || '[12, 28, 9, 7]');
+  let hasVoted  = localStorage.getItem(POLL_KEY) !== null;
+
+  function totalVotes() { return pollVotes.reduce((a,b) => a+b, 0); }
+
+  function renderPoll(animate) {
+    const total = totalVotes();
+    const winner = pollVotes.indexOf(Math.max(...pollVotes));
+    pollVotes.forEach((v, i) => {
+      const pct = total ? Math.round((v/total)*100) : 0;
+      const bar = document.getElementById('bar-'+i);
+      const pctEl = document.getElementById('pct-'+i);
+      const btn = document.querySelectorAll('.poll-btn')[i];
+      if (hasVoted) {
+        bar.style.width = pct + '%';
+        pctEl.textContent = pct + '%';
+        if (i === winner) btn.classList.add('winner');
+        btn.disabled = true;
+        btn.style.cursor = 'default';
+      }
+    });
+    document.getElementById('vote-count').textContent = total + ' vote' + (total !== 1 ? 's' : '') + ' so far';
+    if (hasVoted) document.getElementById('voted-msg').textContent = '✓ You voted';
+  }
+
+  function vote(idx) {
+    if (hasVoted) return;
+    pollVotes[idx]++;
+    localStorage.setItem(POLL_KEY, idx);
+    localStorage.setItem(POLL_KEY + '-votes', JSON.stringify(pollVotes));
+    hasVoted = true;
+    renderPoll(true);
+  }
+
+  renderPoll(false);
+
+  // ── EMAIL SIGNUP ────────────────────────────────────────────
+  function handleSignup() {
+    const email = document.getElementById('email-input').value;
+    if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+    // Replace the action URL with your Mailchimp/Beehiiv endpoint
+    const btn = document.querySelector('.signup-form button');
+    btn.textContent = '✓ You\'re in!';
+    btn.style.background = '#16a34a';
+    btn.disabled = true;
+    localStorage.setItem('st-subscribed', '1');
+
+    const countEl = document.getElementById('sub-count');
+    const n = parseInt(countEl.textContent) + 1;
+    countEl.textContent = n + ' subscribers';
+  }
+
+  // ── SHARE ────────────────────────────────────────────────────
+  function shareIG() {
+    if (navigator.share) {
+      navigator.share({ title: 'The Susky Times', text: 'Daily business news for SU students', url: window.location.href });
+    } else {
+      copyLink(); alert('Link copied! Paste it in your Instagram story.');
+    }
+  }
+
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      const btn = event.target.closest('.share-btn');
+      const orig = btn.innerHTML;
+      btn.innerHTML = '✓ Copied!';
+      setTimeout(() => btn.innerHTML = orig, 2000);
+    });
+  }
+
+  function shareTwitter() {
+    const text = encodeURIComponent('Reading The Susky Times — daily business news for @SusquehannaU students. Free, 5 minutes, actually interesting.');
+    const url  = encodeURIComponent(window.location.href);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+  }
+
+  function unsubscribeUser() {
+    localStorage.removeItem('st-subscribed');
+    const btn = document.getElementById('subscribe-btn');
+    const inp = document.getElementById('email-input');
+    if (btn) { btn.textContent = 'Subscribe free →'; btn.disabled = false; btn.style.background = ''; }
+    if (inp) inp.style.display = '';
+    alert('Done! You'll be removed from the next send. Or email us at thesuskytimes@gmail.com.');
+  }
+  const seedVotes = [18, 30, 12, 8];
+</script>
+
+</body>
+</html>
