@@ -120,19 +120,32 @@ def build_html(d):
     for key in ("sp500", "nasdaq", "dow"):
         m = d[key]
         direction = "up" if m["up"] else "down"
+        # Build the displayed change text with arrow + sign, unless the caller
+        # already supplied one (accept either "0.58%" or "▼ −0.58%").
+        chg = str(m["chg"]).strip()
+        if chg[:1] not in ("▲", "▼"):  # no ▲/▼ prefix supplied
+            num = chg.lstrip("+-− ").strip()
+            if m["up"]:
+                chg = f"▲ +{num}"
+            else:
+                chg = f"▼ −{num}"
         # Replace value
         html = re.sub(
             rf'(id="{key}-val">)[^<]*(</)',
             rf'\g<1>{m["val"]}\2', html, count=1
         )
-        # Replace change text and class
+        # Rewrite the whole change div so class + text are always correct,
+        # independent of attribute order in the template.
         html = re.sub(
-            rf'(id="{key}-chg" class="change )(up|down)(">[^<]*</)',
-            rf'\g<1>{direction}\g<3>', html, count=1
+            rf'<div class="change (?:up|down)" id="{key}-chg">[^<]*</div>',
+            f'<div class="change {direction}" id="{key}-chg">{chg}</div>',
+            html, count=1
         )
+        # Fallback for id-first attribute order.
         html = re.sub(
-            rf'(id="{key}-chg"[^>]*>)[^<]*(</)',
-            rf'\g<1>{m["chg"]}\2', html, count=1
+            rf'<div id="{key}-chg" class="change (?:up|down)">[^<]*</div>',
+            f'<div id="{key}-chg" class="change {direction}">{chg}</div>',
+            html, count=1
         )
 
     # ── Top story ────────────────────────────────────────────────────────────
